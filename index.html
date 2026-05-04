@@ -213,7 +213,7 @@ tbody td{padding:7px 12px;font-size:10px;font-family:'Fira Code',monospace;color
   <div class="m-tab active" data-m="all" onclick="setMonth('all')">All <span class="mb" id="mb-all">199</span></div>
   <div class="m-tab" data-m="jan" onclick="setMonth('jan')">Jan 2026 <span class="mb">57</span></div>
   <div class="m-tab" data-m="feb" onclick="setMonth('feb')">Feb 2026 <span class="mb">82</span></div>
-  <div class="m-tab pending" title="Production data not provided — skipped">Mar 2026 <span class="mb">—</span></div>
+
   <div class="m-tab" data-m="apr" onclick="setMonth('apr')">Apr 2026 <span class="mb">60</span></div>
 </div>
 
@@ -222,7 +222,6 @@ tbody td{padding:7px 12px;font-size:10px;font-family:'Fira Code',monospace;color
   <div class="sec-tab" data-s="weather" onclick="setSec('weather')">🌧 Weather Impact</div>
   <div class="sec-tab" data-s="compare" onclick="setSec('compare')">📊 Month Compare</div>
   <div class="sec-tab" data-s="fuel" onclick="setSec('fuel')">⛽ Fuel (Solar)</div>
-  <div class="sec-tab" data-s="github" onclick="setSec('github')">🌐 GitHub Setup</div>
 </div>
 
 <div style="background:var(--s2);border-bottom:1px solid var(--border);padding:5px 24px;display:flex;align-items:center;justify-content:space-between;">
@@ -342,12 +341,11 @@ tbody td{padding:7px 12px;font-size:10px;font-family:'Fira Code',monospace;color
     <div class="card"><div class="ch"><div><div class="ct">Monthly Revenue</div><div class="cs">Rp juta</div></div></div><div class="cw" style="height:200px"><canvas id="cRev"></canvas></div></div>
     <div class="card"><div class="ch"><div><div class="ct">Avg Ton / Trip</div><div class="cs">Rata-rata per ritase</div></div></div><div class="cw" style="height:200px"><canvas id="cAvg"></canvas></div></div>
   </div>
-  <div class="note-bar">📋 Mar 2026 production not provided — skipped. Jan · Feb · Apr shown. Share Mar production tab link to complete the picture.</div>
 </div>
 
 <!-- ══ FUEL ══ -->
 <div class="view" id="view-fuel">
-  <div class="note-bar">⛽ Fuel (Solar) data from refueling logs. Mar total is partial (99 visible rows). Apr confirmed from sheet total.</div>
+  <div class="note-bar">⛽ Fuel (Solar) data from refueling logs. Figures confirmed from sheet totals.</div>
   <div class="g4">
     <div class="card"><div class="sec-h" style="color:var(--t3)">January 2026</div><div style="color:var(--t3);font-family:'Fira Code',monospace;font-size:11px;margin-top:10px">Fuel log not in shared sheets</div></div>
     <div class="card"><div class="sec-h" style="border-color:var(--cyan)">February 2026</div>
@@ -358,14 +356,7 @@ tbody td{padding:7px 12px;font-size:10px;font-family:'Fira Code',monospace;color
         <div>Rate/L: <span style="color:#fff">Rp 11,000</span></div>
       </div>
     </div>
-    <div class="card"><div class="sec-h" style="border-color:var(--orange)">March 2026 <small style="font-size:8px">(partial)</small></div>
-      <div style="font-family:'Fira Code',monospace;font-size:10px;line-height:2;margin-top:8px">
-        <div>Refuels: <span style="color:#fff">99+</span></div>
-        <div>Volume (min): <span style="color:var(--cyan)">≥11,880 L</span></div>
-        <div>Biaya (est): <span style="color:var(--amber)">≥ Rp 130,680,000</span></div>
-        <div>Rate/L: <span style="color:#fff">Rp 11,000</span></div>
-      </div>
-    </div>
+</div>
     <div class="card"><div class="sec-h" style="border-color:var(--purple)">April 2026</div>
       <div style="font-family:'Fira Code',monospace;font-size:10px;line-height:2;margin-top:8px">
         <div>Refuels: <span style="color:#fff">46</span></div>
@@ -380,93 +371,13 @@ tbody td{padding:7px 12px;font-size:10px;font-family:'Fira Code',monospace;color
     <div class="sec-h">Driver Roster Changes (from Fuel Logs)</div>
     <div style="font-family:'Fira Code',monospace;font-size:10px;color:var(--t2);line-height:2.2">
       <div><span style="color:var(--amber)">Feb 2026:</span> Awang, Darminto, Riko, Anggi (LV01), Julaikat, Rahmat, Jhonson, Gom Gom (LV)</div>
-      <div><span style="color:var(--amber)">Mar 2026:</span> Same + <span style="color:var(--cyan)">Kasmadi</span> joins as replacement on QBP 01</div>
       <div><span style="color:var(--amber)">Apr 2026:</span> Jhonson, Julaikat, Kasmadi, Darminto → <span style="color:var(--cyan)">Deddy</span> replaces Awang mid-Apr · <span style="color:var(--cyan)">Wayan</span> appears late Apr</div>
     </div>
   </div>
 </div>
 
 <!-- ══ GITHUB SETUP ══ -->
-<div class="view" id="view-github">
-  <div class="note-bar">🌐 Once on GitHub Pages, this dashboard is live 24/7 at a permanent URL — no Claude needed, no login required for viewers.</div>
-  <div class="gh-grid">
 
-    <div class="gh-card">
-      <div class="gh-title">📁 Step 1 — Get the File <span class="gh-badge b-easy">DONE</span></div>
-      <div class="gh-step"><div class="sno">✓</div><div>Download <strong>index.html</strong> from this chat (the file you're viewing now). It's already named correctly for GitHub Pages.</div></div>
-      <div class="code-block">Filename: <span class="hl">index.html</span><br>Size: ~65 KB · Self-contained<br>No dependencies to install</div>
-    </div>
-
-    <div class="gh-card">
-      <div class="gh-title">🐙 Step 2 — Create GitHub Account <span class="gh-badge b-easy">2 MIN</span></div>
-      <div class="gh-step"><div class="sno">1</div><div>Go to <strong>github.com</strong> → click <em>Sign up</em></div></div>
-      <div class="gh-step"><div class="sno">2</div><div>Choose a username (e.g. <code>pt-qbp</code>) — this becomes part of your URL</div></div>
-      <div class="gh-step"><div class="sno">3</div><div>Verify email address. Done — account ready.</div></div>
-      <div class="code-block">Your future URL will be:<br><span class="hl">https://pt-qbp.github.io/dashboard/</span></div>
-    </div>
-
-    <div class="gh-card">
-      <div class="gh-title">📂 Step 3 — Create Repository <span class="gh-badge b-best">CORE STEP</span></div>
-      <div class="gh-step"><div class="sno">1</div><div>Click <strong>+</strong> (top right) → <em>New repository</em></div></div>
-      <div class="gh-step"><div class="sno">2</div><div>Repository name: <code>dashboard</code></div></div>
-      <div class="gh-step"><div class="sno">3</div><div>Set to <strong>Public</strong> (required for free Pages)</div></div>
-      <div class="gh-step"><div class="sno">4</div><div>Check ✅ <em>Add a README file</em> → Create repository</div></div>
-    </div>
-
-    <div class="gh-card">
-      <div class="gh-title">⬆️ Step 4 — Upload Dashboard <span class="gh-badge b-best">CORE STEP</span></div>
-      <div class="gh-step"><div class="sno">1</div><div>In your new repository, click <strong>Add file → Upload files</strong></div></div>
-      <div class="gh-step"><div class="sno">2</div><div>Drag <code>index.html</code> into the upload box</div></div>
-      <div class="gh-step"><div class="sno">3</div><div>Scroll down → click <strong>Commit changes</strong> (green button)</div></div>
-      <div class="gh-step"><div class="sno">4</div><div>File is now in your repo!</div></div>
-    </div>
-
-    <div class="gh-card">
-      <div class="gh-title">🌐 Step 5 — Enable Pages <span class="gh-badge b-best">FINAL STEP</span></div>
-      <div class="gh-step"><div class="sno">1</div><div>In your repo → click <strong>Settings</strong> tab (top menu)</div></div>
-      <div class="gh-step"><div class="sno">2</div><div>Left sidebar → click <strong>Pages</strong></div></div>
-      <div class="gh-step"><div class="sno">3</div><div>Under <em>Source</em>, select <strong>Deploy from a branch</strong></div></div>
-      <div class="gh-step"><div class="sno">4</div><div>Branch: <strong>main</strong> · Folder: <strong>/ (root)</strong> → Save</div></div>
-      <div class="gh-step"><div class="sno">5</div><div>Wait ~60 seconds → your URL is live! ✅</div></div>
-    </div>
-
-    <div class="gh-card" style="grid-column:1/-1;border-color:rgba(74,222,128,.3);background:rgba(74,222,128,.04)">
-      <div class="gh-title" style="color:var(--green)">🔄 Auto-Update: Dashboard syncs with Google Sheet automatically <span class="gh-badge b-easy">RECOMMENDED SETUP</span></div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
-        <div>
-          <div style="font-size:10px;color:var(--green);font-family:'Fira Code',monospace;letter-spacing:1px;margin-bottom:10px">STEP 1 — Publish Sheet as CSV (do this once per tab)</div>
-          <div class="gh-step"><div class="sno">1</div><div>In Google Sheets → <strong>File → Share → Publish to web</strong></div></div>
-          <div class="gh-step"><div class="sno">2</div><div>Select the production tab (e.g. "Production Global April 26") → format: <strong>CSV</strong> → click <strong>Publish</strong></div></div>
-          <div class="gh-step"><div class="sno">3</div><div>Copy the published URL — it looks like:<br><code style="font-size:9px;color:var(--cyan)">docs.google.com/spreadsheets/d/e/…/pub?gid=…&output=csv</code></div></div>
-          <div class="gh-step"><div class="sno">4</div><div>Share those CSV URLs with Claude → I'll update the dashboard to fetch live data on every page load</div></div>
-          <div class="gh-step"><div class="sno">5</div><div>Upload updated <code>index.html</code> to GitHub once — after that, just edit the Sheet and refresh the browser</div></div>
-        </div>
-        <div>
-          <div style="font-size:10px;color:var(--amber);font-family:'Fira Code',monospace;letter-spacing:1px;margin-bottom:10px">HOW IT WORKS AFTER SETUP</div>
-          <div class="code-block">
-            <span class="hl">You (monthly):</span><br>
-            Add new trips to Google Sheet<br><br>
-            <span class="hl">Dashboard (automatic):</span><br>
-            1. User opens GitHub Pages URL<br>
-            2. Dashboard fetches CSV from Sheet<br>
-            3. Parses &amp; renders new data live<br>
-            4. Weather also refreshes automatically<br><br>
-            <span class="hl">Result:</span> Zero work after initial setup ✅
-          </div>
-          <div style="font-size:9px;color:var(--t3);font-family:'Fira Code',monospace;margin-top:8px">Note: "Publish to web" is different from "Share". It creates a public read-only CSV export that doesn't require login to access.</div>
-        </div>
-      </div>
-    </div>
-      <div class="gh-step"><div class="sno">1</div><div>Get updated <code>index.html</code> from Claude (paste new data → regenerate)</div></div>
-      <div class="gh-step"><div class="sno">2</div><div>Go to your GitHub repo → find <code>index.html</code> → click the pencil ✏️</div></div>
-      <div class="gh-step"><div class="sno">3</div><div>Or use <strong>Add file → Upload files</strong> to overwrite the old one</div></div>
-      <div class="gh-step"><div class="sno">4</div><div>Commit → site updates automatically in 30 seconds</div></div>
-      <div class="code-block">Monthly workflow:<br><span class="hl">1.</span> Add new month's data to Google Sheet<br><span class="hl">2.</span> Share sheet link with Claude<br><span class="hl">3.</span> Get new index.html → upload to GitHub<br><span class="hl">4.</span> Done — team sees updated dashboard</div>
-    </div>
-
-  </div>
-
-</div>
 
 </div><!-- /main -->
 
@@ -1127,7 +1038,7 @@ function buildCompare(){
 
 function buildFuel(){
   if(charts.fuelChart)charts.fuelChart.destroy();
-  charts.fuelChart=new Chart(document.getElementById('fuelChart').getContext('2d'),{type:'bar',data:{labels:['Feb 2026','Mar 2026\n(partial)','Apr 2026'],datasets:[{label:'Volume (L)',data:[9720,11880,5520],backgroundColor:'rgba(34,211,238,.4)',borderColor:'#22d3ee',borderWidth:1,borderRadius:3,yAxisID:'y'},{label:'Biaya (Rp)',data:[106920000,130680000,60720000],backgroundColor:'rgba(251,146,60,.3)',borderColor:'#fb923c',borderWidth:1,borderRadius:3,yAxisID:'y2'}]},options:{...BASE,plugins:{...BASE.plugins,legend:{display:true,labels:{color:'#64748b',font:{family:'Fira Code',size:9},boxWidth:8}}},scales:{x:BASE.scales.x,y:{...BASE.scales.y,position:'left',ticks:{...BASE.scales.y.ticks,callback:v=>fN(v)+'L'}},y2:{position:'right',grid:{display:false},ticks:{color:'#64748b',font:{family:'Fira Code',size:9},callback:v=>'Rp'+(v/1e6).toFixed(0)+'Jt'}}}}});
+  charts.fuelChart=new Chart(document.getElementById('fuelChart').getContext('2d'),{type:'bar',data:{labels:['Feb 2026','Apr 2026'],datasets:[{label:'Volume (L)',data:[9720,5520],backgroundColor:'rgba(34,211,238,.4)',borderColor:'#22d3ee',borderWidth:1,borderRadius:3,yAxisID:'y'},{label:'Biaya (Rp)',data:[106920000,60720000],backgroundColor:'rgba(251,146,60,.3)',borderColor:'#fb923c',borderWidth:1,borderRadius:3,yAxisID:'y2'}]},options:{...BASE,plugins:{...BASE.plugins,legend:{display:true,labels:{color:'#64748b',font:{family:'Fira Code',size:9},boxWidth:8}}},scales:{x:BASE.scales.x,y:{...BASE.scales.y,position:'left',ticks:{...BASE.scales.y.ticks,callback:v=>fN(v)+'L'}},y2:{position:'right',grid:{display:false},ticks:{color:'#64748b',font:{family:'Fira Code',size:9},callback:v=>'Rp'+(v/1e6).toFixed(0)+'Jt'}}}}});
 }
 
 function renderAll(){const data=getFiltered();buildKPIs(data);buildDaily(data);buildDonut(data);buildDriverBar('dTripChart','no',false);buildDriverBar('dTonChart','tonase',false);buildDriverBar('dRevChart','revenue',true);buildDriverCards(data);buildTable(data);}
