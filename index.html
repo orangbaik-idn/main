@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>QBP Operations Dashboard 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&family=Fira+Code:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{
+  --bg:#0b0e13;--s1:#131820;--s2:#1a2130;--s3:#212d3d;--border:#253040;--border2:#2e3d52;
+  --amber:#f59e0b;--amberd:rgba(245,158,11,.12);--amber2:#fbbf24;
+  --cyan:#22d3ee;--cyand:rgba(34,211,238,.1);
+  --green:#4ade80;--greend:rgba(74,222,128,.1);
+  --purple:#a78bfa;--purpled:rgba(167,139,250,.1);
+  --red:#f87171;--orange:#fb923c;--blue:#60a5fa;--blued:rgba(96,165,250,.1);
+  --t1:#e8edf5;--t2:#94a3b8;--t3:#64748b;--t4:#3d5068;--r:6px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--t1);font-family:'DM Sans',sans-serif;min-height:100vh;}
+
+/* TOPBAR */
+.topbar{background:var(--s1);border-bottom:1px solid var(--border);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;position:sticky;top:0;z-index:200;}
+.logo{display:flex;align-items:center;gap:10px;}
+.logo-badge{background:var(--amber);color:#000;font-family:'Oswald',sans-serif;font-weight:700;font-size:11px;letter-spacing:2px;padding:3px 8px;}
+.logo-text{font-family:'Oswald',sans-serif;font-size:16px;font-weight:500;letter-spacing:.8px;}
+.logo-sub{font-size:9px;color:var(--t3);margin-top:1px;}
+.top-right{display:flex;align-items:center;gap:12px;}
+.weather-widget{background:var(--s2);border:1px solid var(--border);border-radius:4px;padding:6px 12px;display:flex;align-items:center;gap:8px;cursor:pointer;transition:.15s;}
+.weather-widget:hover{border-color:var(--blue);}
+.wx-icon{font-size:18px;}
+.wx-temp{font-family:'Oswald',sans-serif;font-size:16px;color:#fff;}
+.wx-info{font-size:9px;color:var(--t3);font-family:'Fira Code',monospace;line-height:1.4;}
+.wx-rain{color:var(--blue);}
+.dot-live{display:flex;align-items:center;gap:5px;font-size:9px;color:var(--green);font-family:'Fira Code',monospace;}
+.dot-live span{width:5px;height:5px;background:var(--green);border-radius:50%;animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.refresh-btn{background:var(--s2);border:1px solid var(--border);color:var(--t2);font-size:10px;padding:5px 10px;border-radius:4px;cursor:pointer;font-family:'Fira Code',monospace;transition:.15s;}
+.refresh-btn:hover{border-color:var(--amber);color:var(--amber);}
+
+/* TABS */
+.month-nav{background:var(--s1);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;gap:2px;}
+.m-tab{padding:11px 16px;font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:1px;color:var(--t3);cursor:pointer;border-bottom:2px solid transparent;transition:.15s;text-transform:uppercase;white-space:nowrap;}
+.m-tab:hover{color:var(--t2);}
+.m-tab.active{color:var(--amber);border-bottom-color:var(--amber);}
+.m-tab .mb{font-size:8px;font-family:'Fira Code',monospace;margin-left:5px;background:var(--s3);color:var(--t3);padding:1px 4px;border-radius:10px;vertical-align:middle;}
+.m-tab.active .mb{background:var(--amberd);color:var(--amber);}
+.m-tab.pending{opacity:.4;cursor:not-allowed;font-style:italic;}
+.sec-nav{background:var(--s2);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;gap:1px;}
+.sec-tab{padding:7px 14px;font-size:10px;color:var(--t3);cursor:pointer;border-bottom:2px solid transparent;transition:.15s;font-family:'Fira Code',monospace;letter-spacing:.5px;}
+.sec-tab:hover{color:var(--t2);}
+.sec-tab.active{color:var(--cyan);border-bottom-color:var(--cyan);}
+
+/* FILTERS */
+.filters{background:var(--s1);border-bottom:1px solid var(--border);padding:8px 24px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.fl{font-size:9px;color:var(--t3);font-family:'Fira Code',monospace;letter-spacing:1.5px;text-transform:uppercase;white-space:nowrap;}
+.chips{display:flex;gap:5px;flex-wrap:wrap;}
+.chip{background:var(--s2);border:1px solid var(--border);color:var(--t2);font-size:9px;padding:3px 9px;border-radius:20px;cursor:pointer;transition:.12s;font-family:'Fira Code',monospace;}
+.chip:hover{border-color:var(--amber);color:var(--amber);}
+.chip.active{background:var(--amberd);border-color:var(--amber);color:var(--amber);}
+.fdiv{width:1px;height:16px;background:var(--border);}
+
+/* MAIN */
+.main{padding:16px 24px;display:flex;flex-direction:column;gap:14px;}
+.view{display:none;flex-direction:column;gap:14px;}
+.view.active{display:flex;}
+
+/* KPI */
+.kpi-row{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;}
+.kpi{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;position:relative;overflow:hidden;transition:.2s;}
+.kpi:hover{border-color:var(--amber);}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.kpi.a::before{background:linear-gradient(90deg,var(--amber),transparent);}
+.kpi.c::before{background:linear-gradient(90deg,var(--cyan),transparent);}
+.kpi.g::before{background:linear-gradient(90deg,var(--green),transparent);}
+.kpi.p::before{background:linear-gradient(90deg,var(--purple),transparent);}
+.kpi.b::before{background:linear-gradient(90deg,var(--blue),transparent);}
+.kpi.o::before{background:linear-gradient(90deg,var(--orange),transparent);}
+.kpi-lbl{font-size:8px;color:var(--t3);letter-spacing:1.5px;text-transform:uppercase;font-family:'Fira Code',monospace;margin-bottom:5px;}
+.kpi-val{font-family:'Oswald',sans-serif;font-size:26px;font-weight:600;line-height:1;color:#fff;}
+.kpi-sub{font-size:9px;color:var(--t3);margin-top:4px;font-family:'Fira Code',monospace;}
+.kpi-trend{position:absolute;top:12px;right:12px;font-size:10px;font-family:'Fira Code',monospace;font-weight:500;}
+.up{color:var(--green);}
+.dn{color:var(--red);}
+
+/* CARDS */
+.g2{display:grid;gap:12px;}
+.g2-main{grid-template-columns:2.2fr 1fr;}
+.g2-half{grid-template-columns:1fr 1fr;}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.card{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:16px;}
+.ch{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;}
+.ct{font-family:'Oswald',sans-serif;font-size:12px;font-weight:500;letter-spacing:.5px;text-transform:uppercase;}
+.cs{font-size:9px;color:var(--t3);font-family:'Fira Code',monospace;margin-top:2px;letter-spacing:.3px;}
+.cw{position:relative;}
+
+/* DRIVER CARDS */
+.dgrid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;}
+.dc{background:var(--s2);border:1px solid var(--border);border-radius:4px;padding:11px;cursor:pointer;transition:.15s;}
+.dc:hover,.dc.active{border-color:var(--amber);background:var(--amberd);}
+.dn2{font-family:'Oswald',sans-serif;font-weight:600;font-size:13px;}
+.du{font-size:8px;color:var(--t3);font-family:'Fira Code',monospace;}
+.dbv{font-family:'Oswald',sans-serif;font-size:18px;font-weight:600;margin-top:8px;}
+.dbl{font-size:8px;color:var(--t3);font-family:'Fira Code',monospace;text-transform:uppercase;}
+.dbg{background:var(--border);height:2px;border-radius:1px;margin-top:6px;}
+.dbf{height:100%;border-radius:1px;}
+.dbadge{font-size:7px;font-family:'Fira Code',monospace;padding:1px 4px;border-radius:3px;display:inline-block;margin-top:3px;}
+.new{background:var(--cyand);color:var(--cyan);}
+.act{background:var(--greend);color:var(--green);}
+
+/* TABLE */
+.tw{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;}
+.th{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;}
+.tsrch{background:var(--s2);border:1px solid var(--border);color:var(--t1);font-family:'Fira Code',monospace;font-size:10px;padding:5px 10px;border-radius:4px;width:190px;outline:none;}
+.tsrch:focus{border-color:var(--amber);}
+table{width:100%;border-collapse:collapse;}
+thead th{background:var(--s2);padding:8px 12px;text-align:left;font-size:8px;color:var(--t3);font-family:'Fira Code',monospace;letter-spacing:1.2px;text-transform:uppercase;border-bottom:1px solid var(--border);cursor:pointer;white-space:nowrap;user-select:none;}
+thead th:hover{color:var(--amber);}
+tbody tr{border-bottom:1px solid rgba(37,48,64,.5);transition:.08s;}
+tbody tr:hover{background:rgba(245,158,11,.03);}
+tbody tr.rainy{background:rgba(96,165,250,.04);}
+tbody td{padding:7px 12px;font-size:10px;font-family:'Fira Code',monospace;color:var(--t2);white-space:nowrap;}
+.td-ton{color:var(--cyan);}
+.td-rev{color:var(--amber);}
+.tdu{background:var(--s2);color:var(--t3);padding:1px 6px;border-radius:3px;font-size:8px;display:inline-block;}
+.pgn{padding:9px 16px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+.pi{font-size:9px;color:var(--t3);font-family:'Fira Code',monospace;}
+.pbs{display:flex;gap:3px;}
+.pb{background:var(--s2);border:1px solid var(--border);color:var(--t2);font-size:9px;padding:3px 9px;border-radius:3px;cursor:pointer;font-family:'Fira Code',monospace;transition:.1s;}
+.pb:hover,.pb.active{border-color:var(--amber);color:var(--amber);}
+.pb:disabled{opacity:.3;cursor:default;}
+
+/* WEATHER VIEW */
+.wx-forecast{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;}
+.wx-day{background:var(--s2);border:1px solid var(--border);border-radius:var(--r);padding:14px;text-align:center;}
+.wx-day-name{font-size:9px;color:var(--t3);font-family:'Fira Code',monospace;text-transform:uppercase;letter-spacing:1px;}
+.wx-day-icon{font-size:26px;margin:8px 0;}
+.wx-day-temp{font-family:'Oswald',sans-serif;font-size:18px;color:#fff;}
+.wx-day-rain{font-size:9px;color:var(--blue);font-family:'Fira Code',monospace;margin-top:4px;}
+.wx-day-prob{font-size:8px;color:var(--t3);font-family:'Fira Code',monospace;}
+.wx-stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.wx-stat{background:var(--s2);border:1px solid var(--border);border-radius:var(--r);padding:14px;}
+.wx-stat-lbl{font-size:9px;color:var(--t3);font-family:'Fira Code',monospace;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;}
+.wx-stat-val{font-family:'Oswald',sans-serif;font-size:22px;color:#fff;}
+.wx-stat-sub{font-size:9px;color:var(--t3);font-family:'Fira Code',monospace;margin-top:3px;}
+.corr-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.corr-card{background:var(--s2);border:1px solid var(--border);border-radius:var(--r);padding:14px;}
+.corr-type{font-size:9px;font-family:'Fira Code',monospace;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;}
+.corr-val{font-family:'Oswald',sans-serif;font-size:20px;color:#fff;}
+.corr-sub{font-size:9px;color:var(--t3);font-family:'Fira Code',monospace;margin-top:3px;}
+.loading-wx{display:flex;align-items:center;gap:10px;padding:20px;color:var(--t3);font-family:'Fira Code',monospace;font-size:11px;}
+.spinner{width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* COMPARE */
+.cmp-banner{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:12px 18px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;}
+.cmp-item{display:flex;align-items:center;gap:8px;}
+.cmp-pill{background:var(--s2);border:1px solid var(--border);border-radius:4px;padding:5px 12px;text-align:center;}
+.cmp-pill .cv{font-family:'Oswald',sans-serif;font-size:20px;color:#fff;}
+.cmp-pill .cl{font-size:8px;color:var(--t3);font-family:'Fira Code',monospace;}
+.cmp-chg{text-align:center;}
+.cmp-chg .cc{font-family:'Oswald',sans-serif;font-size:16px;font-weight:600;}
+.cmp-chg .ck{font-size:8px;color:var(--t3);font-family:'Fira Code',monospace;}
+.cdiv{width:1px;height:36px;background:var(--border);}
+
+/* GITHUB GUIDE */
+.gh-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.gh-card{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:18px;}
+.gh-title{font-family:'Oswald',sans-serif;font-size:14px;letter-spacing:.5px;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.gh-badge{font-size:8px;padding:2px 6px;border-radius:3px;font-family:'Fira Code',monospace;}
+.b-easy{background:var(--greend);color:var(--green);}
+.b-best{background:var(--amberd);color:var(--amber);}
+.gh-step{display:flex;gap:8px;margin-bottom:10px;font-size:11px;color:var(--t2);line-height:1.5;}
+.sno{min-width:20px;height:20px;background:var(--s3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-family:'Fira Code',monospace;color:var(--amber);flex-shrink:0;margin-top:1px;}
+.code-block{background:var(--s2);border:1px solid var(--border);border-radius:4px;padding:10px 14px;font-family:'Fira Code',monospace;font-size:10px;color:var(--cyan);margin-top:10px;line-height:1.8;word-break:break-all;}
+.code-block .hl{color:var(--amber);}
+.note-bar{background:rgba(96,165,250,.08);border:1px solid rgba(96,165,250,.2);border-radius:4px;padding:9px 14px;font-size:10px;color:var(--blue);font-family:'Fira Code',monospace;display:flex;align-items:center;gap:8px;}
+.sec-h{font-family:'Oswald',sans-serif;font-size:10px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--t3);padding-left:8px;border-left:2px solid var(--amber);margin-bottom:8px;}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+::-webkit-scrollbar-thumb:hover{background:var(--amber);}
+
+@media(max-width:1300px){.kpi-row{grid-template-columns:repeat(4,1fr);}.dgrid{grid-template-columns:repeat(4,1fr);}}
+@media(max-width:900px){.main{padding:12px;}.kpi-row{grid-template-columns:repeat(2,1fr);}.g2-main,.g2-half,.g3,.g4{grid-template-columns:1fr;}.dgrid{grid-template-columns:repeat(2,1fr);}.gh-grid{grid-template-columns:1fr;}.wx-forecast{grid-template-columns:repeat(3,1fr);}.wx-stat-grid{grid-template-columns:repeat(2,1fr);}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo">
+    <div><div class="logo-badge">QBP</div></div>
+    <div><div class="logo-text">Operations Dashboard 2026</div><div class="logo-sub">PT QBP · Bayung Lencir, Muba · ISP 68–SBL · H2 · 68 km</div></div>
+  </div>
+  <div class="top-right">
+    <div class="weather-widget" onclick="setSec('weather')" title="Click for weather detail">
+      <div class="wx-icon" id="wxIcon">⏳</div>
+      <div>
+        <div class="wx-temp" id="wxTemp">—°C</div>
+        <div class="wx-info"><span id="wxCond">Loading weather...</span></div>
+        <div class="wx-info wx-rain" id="wxRain">Bayung Lencir</div>
+      </div>
+    </div>
+    <div class="dot-live"><span></span>LIVE</div>
+    <button class="refresh-btn" onclick="fetchAllWeather()">⟳ Weather</button>
+  </div>
+</div>
+
+<div class="month-nav">
+  <div class="m-tab active" data-m="all" onclick="setMonth('all')">All <span class="mb" id="mb-all">199</span></div>
+  <div class="m-tab" data-m="jan" onclick="setMonth('jan')">Jan 2026 <span class="mb">57</span></div>
+  <div class="m-tab" data-m="feb" onclick="setMonth('feb')">Feb 2026 <span class="mb">82</span></div>
+  <div class="m-tab pending" title="Production data not provided — skipped">Mar 2026 <span class="mb">—</span></div>
+  <div class="m-tab" data-m="apr" onclick="setMonth('apr')">Apr 2026 <span class="mb">60</span></div>
+</div>
+
+<div class="sec-nav">
+  <div class="sec-tab active" data-s="production" onclick="setSec('production')">⛏ Production</div>
+  <div class="sec-tab" data-s="weather" onclick="setSec('weather')">🌧 Weather Impact</div>
+  <div class="sec-tab" data-s="compare" onclick="setSec('compare')">📊 Month Compare</div>
+  <div class="sec-tab" data-s="fuel" onclick="setSec('fuel')">⛽ Fuel (Solar)</div>
+  <div class="sec-tab" data-s="github" onclick="setSec('github')">🌐 GitHub Setup</div>
+</div>
+
+<div style="background:var(--s2);border-bottom:1px solid var(--border);padding:5px 24px;display:flex;align-items:center;justify-content:space-between;">
+  <div id="liveStatus" style="font-family:'Fira Code',monospace;font-size:10px;color:var(--amber)">⟳ Loading live data from Google Sheets...</div>
+  <button class="refresh-btn" onclick="fetchLiveData()" style="font-size:9px;padding:3px 8px">⟳ Refresh Data</button>
+</div>
+<div class="filters" id="filterBar">
+  <span class="fl">Driver</span>
+  <div class="chips" id="dChips"></div>
+  <div class="fdiv"></div>
+  <span class="fl">Unit</span>
+  <div class="chips" id="uChips"></div>
+</div>
+
+<div class="main">
+
+<!-- ══ PRODUCTION ══ -->
+<div class="view active" id="view-production">
+  <div class="kpi-row" id="kpiRow"></div>
+  <div class="g2 g2-main">
+    <div class="card">
+      <div class="ch"><div><div class="ct">Daily Production + Rainfall</div><div class="cs" id="wxOverlayNote">Loading weather overlay from Open-Meteo...</div></div></div>
+      <div class="cw" style="height:240px"><canvas id="dailyChart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="ch"><div><div class="ct">Driver Share</div><div class="cs">Porsi tonase per pengemudi</div></div></div>
+      <div class="cw" style="height:240px"><canvas id="donutChart"></canvas></div>
+    </div>
+  </div>
+  <div class="g3">
+    <div class="card">
+      <div class="ch"><div><div class="ct">Ritase / Driver</div><div class="cs">Jumlah trip</div></div></div>
+      <div class="cw" style="height:170px"><canvas id="dTripChart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="ch"><div><div class="ct">Tonase / Driver</div><div class="cs">Total ton</div></div></div>
+      <div class="cw" style="height:170px"><canvas id="dTonChart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="ch"><div><div class="ct">Revenue / Driver</div><div class="cs">Rp juta</div></div></div>
+      <div class="cw" style="height:170px"><canvas id="dRevChart"></canvas></div>
+    </div>
+  </div>
+  <div>
+    <div class="sec-h">Driver Performance</div>
+    <div class="dgrid" id="dCards"></div>
+  </div>
+  <div class="tw">
+    <div class="th">
+      <div><div class="ct">Trip Log</div><div class="cs"><span id="rowCount">139</span> records · 💧 = rainy day (≥5mm)</div></div>
+      <input class="tsrch" id="tblSrch" placeholder="Cari driver / unit / DO..." oninput="onSrch()">
+    </div>
+    <div style="overflow-x:auto">
+      <table>
+        <thead><tr>
+          <th onclick="srt('no')">No.</th>
+          <th onclick="srt('month')">Bln</th>
+          <th onclick="srt('date')">Tgl Dump</th>
+          <th onclick="srt('driver')">Driver</th>
+          <th onclick="srt('unit')">Unit</th>
+          <th onclick="srt('do_num')">DO</th>
+          <th onclick="srt('tonase')">Ton</th>
+          <th onclick="srt('rp_per_km_ton')">Rate</th>
+          <th onclick="srt('revenue')">Revenue</th>
+          <th>Rain</th>
+        </tr></thead>
+        <tbody id="tblBody"></tbody>
+      </table>
+    </div>
+    <div class="pgn"><div class="pi" id="pgInfo">—</div><div class="pbs"><button class="pb" id="bPrev" onclick="pg(-1)">← Prev</button><button class="pb" id="bNext" onclick="pg(1)">Next →</button></div></div>
+  </div>
+</div>
+
+<!-- ══ WEATHER ══ -->
+<div class="view" id="view-weather">
+  <div class="note-bar" id="wxLoadNote"><div class="spinner"></div> Fetching live weather from Open-Meteo (free API, no key) for Bayung Lencir...</div>
+
+  <div class="sec-h">Current Conditions — Bayung Lencir (-2.35°S, 104.27°E)</div>
+  <div class="wx-stat-grid" id="wxStats">
+    <div class="wx-stat"><div class="wx-stat-lbl">Temperature</div><div class="wx-stat-val" id="wxS-temp">—</div><div class="wx-stat-sub">°C · feels like —</div></div>
+    <div class="wx-stat"><div class="wx-stat-lbl">Precipitation Today</div><div class="wx-stat-val wx-rain" id="wxS-prcp">—</div><div class="wx-stat-sub">mm accumulated</div></div>
+    <div class="wx-stat"><div class="wx-stat-lbl">Condition</div><div class="wx-stat-val" id="wxS-cond" style="font-size:30px">⏳</div><div class="wx-stat-sub" id="wxS-condtxt">loading...</div></div>
+    <div class="wx-stat"><div class="wx-stat-lbl">Wind</div><div class="wx-stat-val" id="wxS-wind">—</div><div class="wx-stat-sub">km/h</div></div>
+  </div>
+
+  <div class="sec-h">5-Day Forecast</div>
+  <div class="wx-forecast" id="wxForecast">
+    <div class="wx-day"><div class="wx-day-icon">⏳</div><div class="wx-day-name">Loading...</div></div>
+  </div>
+
+  <div class="sec-h">Jan–Feb 2026 Weather vs Production</div>
+  <div class="card">
+    <div class="ch"><div><div class="ct">Rainfall & Tonnage Correlation</div><div class="cs">Daily rainfall (mm) overlaid with total tonnage — Jan & Feb 2026</div></div></div>
+    <div class="cw" style="height:260px"><canvas id="wxProdChart"></canvas></div>
+  </div>
+
+  <div class="sec-h">Production by Rainfall Intensity</div>
+  <div class="corr-grid" id="corrCards">
+    <div class="corr-card"><div class="corr-type" style="color:var(--green)">☀️ Dry Day (0–5mm)</div><div class="corr-val">—</div><div class="corr-sub">avg trips · — avg ton</div></div>
+    <div class="corr-card"><div class="corr-type" style="color:var(--amber)">🌦 Moderate Rain (5–20mm)</div><div class="corr-val">—</div><div class="corr-sub">avg trips · — avg ton</div></div>
+    <div class="corr-card"><div class="corr-type" style="color:var(--blue)">🌧 Heavy Rain (≥20mm)</div><div class="corr-val">—</div><div class="corr-sub">avg trips · — avg ton</div></div>
+  </div>
+  <div class="card">
+    <div class="ch"><div><div class="ct">Rainfall Distribution</div><div class="cs">Daily rainfall across Jan–Feb 2026</div></div></div>
+    <div class="cw" style="height:180px"><canvas id="wxDistChart"></canvas></div>
+  </div>
+</div>
+
+<!-- ══ COMPARE ══ -->
+<div class="view" id="view-compare">
+  <div class="cmp-banner" id="cmpBanner"></div>
+  <div class="g2 g2-half">
+    <div class="card"><div class="ch"><div><div class="ct">Monthly Ritase</div><div class="cs">Trips per bulan</div></div></div><div class="cw" style="height:200px"><canvas id="cTrip"></canvas></div></div>
+    <div class="card"><div class="ch"><div><div class="ct">Monthly Tonase</div><div class="cs">Total ton</div></div></div><div class="cw" style="height:200px"><canvas id="cTon"></canvas></div></div>
+  </div>
+  <div class="g2 g2-half">
+    <div class="card"><div class="ch"><div><div class="ct">Monthly Revenue</div><div class="cs">Rp juta</div></div></div><div class="cw" style="height:200px"><canvas id="cRev"></canvas></div></div>
+    <div class="card"><div class="ch"><div><div class="ct">Avg Ton / Trip</div><div class="cs">Rata-rata per ritase</div></div></div><div class="cw" style="height:200px"><canvas id="cAvg"></canvas></div></div>
+  </div>
+  <div class="note-bar">📋 Mar 2026 production not provided — skipped. Jan · Feb · Apr shown. Share Mar production tab link to complete the picture.</div>
+</div>
+
+<!-- ══ FUEL ══ -->
+<div class="view" id="view-fuel">
+  <div class="note-bar">⛽ Fuel (Solar) data from refueling logs. Mar total is partial (99 visible rows). Apr confirmed from sheet total.</div>
+  <div class="g4">
+    <div class="card"><div class="sec-h" style="color:var(--t3)">January 2026</div><div style="color:var(--t3);font-family:'Fira Code',monospace;font-size:11px;margin-top:10px">Fuel log not in shared sheets</div></div>
+    <div class="card"><div class="sec-h" style="border-color:var(--cyan)">February 2026</div>
+      <div style="font-family:'Fira Code',monospace;font-size:10px;line-height:2;margin-top:8px">
+        <div>Refuels: <span style="color:#fff">81</span></div>
+        <div>Volume: <span style="color:var(--cyan)">9,720 L</span></div>
+        <div>Biaya: <span style="color:var(--amber)">Rp 106,920,000</span></div>
+        <div>Rate/L: <span style="color:#fff">Rp 11,000</span></div>
+      </div>
+    </div>
+    <div class="card"><div class="sec-h" style="border-color:var(--orange)">March 2026 <small style="font-size:8px">(partial)</small></div>
+      <div style="font-family:'Fira Code',monospace;font-size:10px;line-height:2;margin-top:8px">
+        <div>Refuels: <span style="color:#fff">99+</span></div>
+        <div>Volume (min): <span style="color:var(--cyan)">≥11,880 L</span></div>
+        <div>Biaya (est): <span style="color:var(--amber)">≥ Rp 130,680,000</span></div>
+        <div>Rate/L: <span style="color:#fff">Rp 11,000</span></div>
+      </div>
+    </div>
+    <div class="card"><div class="sec-h" style="border-color:var(--purple)">April 2026</div>
+      <div style="font-family:'Fira Code',monospace;font-size:10px;line-height:2;margin-top:8px">
+        <div>Refuels: <span style="color:#fff">46</span></div>
+        <div>Volume: <span style="color:var(--cyan)">5,520 L</span></div>
+        <div>Biaya: <span style="color:var(--amber)">Rp 60,720,000</span></div>
+        <div>Rate/L: <span style="color:#fff">Rp 11,000</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="card"><div class="ch"><div><div class="ct">Fuel Cost by Month</div><div class="cs">Volume & biaya solar per bulan</div></div></div><div class="cw" style="height:200px"><canvas id="fuelChart"></canvas></div></div>
+  <div class="card">
+    <div class="sec-h">Driver Roster Changes (from Fuel Logs)</div>
+    <div style="font-family:'Fira Code',monospace;font-size:10px;color:var(--t2);line-height:2.2">
+      <div><span style="color:var(--amber)">Feb 2026:</span> Awang, Darminto, Riko, Anggi (LV01), Julaikat, Rahmat, Jhonson, Gom Gom (LV)</div>
+      <div><span style="color:var(--amber)">Mar 2026:</span> Same + <span style="color:var(--cyan)">Kasmadi</span> joins as replacement on QBP 01</div>
+      <div><span style="color:var(--amber)">Apr 2026:</span> Jhonson, Julaikat, Kasmadi, Darminto → <span style="color:var(--cyan)">Deddy</span> replaces Awang mid-Apr · <span style="color:var(--cyan)">Wayan</span> appears late Apr</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ GITHUB SETUP ══ -->
+<div class="view" id="view-github">
+  <div class="note-bar">🌐 Once on GitHub Pages, this dashboard is live 24/7 at a permanent URL — no Claude needed, no login required for viewers.</div>
+  <div class="gh-grid">
+
+    <div class="gh-card">
+      <div class="gh-title">📁 Step 1 — Get the File <span class="gh-badge b-easy">DONE</span></div>
+      <div class="gh-step"><div class="sno">✓</div><div>Download <strong>index.html</strong> from this chat (the file you're viewing now). It's already named correctly for GitHub Pages.</div></div>
+      <div class="code-block">Filename: <span class="hl">index.html</span><br>Size: ~65 KB · Self-contained<br>No dependencies to install</div>
+    </div>
+
+    <div class="gh-card">
+      <div class="gh-title">🐙 Step 2 — Create GitHub Account <span class="gh-badge b-easy">2 MIN</span></div>
+      <div class="gh-step"><div class="sno">1</div><div>Go to <strong>github.com</strong> → click <em>Sign up</em></div></div>
+      <div class="gh-step"><div class="sno">2</div><div>Choose a username (e.g. <code>pt-qbp</code>) — this becomes part of your URL</div></div>
+      <div class="gh-step"><div class="sno">3</div><div>Verify email address. Done — account ready.</div></div>
+      <div class="code-block">Your future URL will be:<br><span class="hl">https://pt-qbp.github.io/dashboard/</span></div>
+    </div>
+
+    <div class="gh-card">
+      <div class="gh-title">📂 Step 3 — Create Repository <span class="gh-badge b-best">CORE STEP</span></div>
+      <div class="gh-step"><div class="sno">1</div><div>Click <strong>+</strong> (top right) → <em>New repository</em></div></div>
+      <div class="gh-step"><div class="sno">2</div><div>Repository name: <code>dashboard</code></div></div>
+      <div class="gh-step"><div class="sno">3</div><div>Set to <strong>Public</strong> (required for free Pages)</div></div>
+      <div class="gh-step"><div class="sno">4</div><div>Check ✅ <em>Add a README file</em> → Create repository</div></div>
+    </div>
+
+    <div class="gh-card">
+      <div class="gh-title">⬆️ Step 4 — Upload Dashboard <span class="gh-badge b-best">CORE STEP</span></div>
+      <div class="gh-step"><div class="sno">1</div><div>In your new repository, click <strong>Add file → Upload files</strong></div></div>
+      <div class="gh-step"><div class="sno">2</div><div>Drag <code>index.html</code> into the upload box</div></div>
+      <div class="gh-step"><div class="sno">3</div><div>Scroll down → click <strong>Commit changes</strong> (green button)</div></div>
+      <div class="gh-step"><div class="sno">4</div><div>File is now in your repo!</div></div>
+    </div>
+
+    <div class="gh-card">
+      <div class="gh-title">🌐 Step 5 — Enable Pages <span class="gh-badge b-best">FINAL STEP</span></div>
+      <div class="gh-step"><div class="sno">1</div><div>In your repo → click <strong>Settings</strong> tab (top menu)</div></div>
+      <div class="gh-step"><div class="sno">2</div><div>Left sidebar → click <strong>Pages</strong></div></div>
+      <div class="gh-step"><div class="sno">3</div><div>Under <em>Source</em>, select <strong>Deploy from a branch</strong></div></div>
+      <div class="gh-step"><div class="sno">4</div><div>Branch: <strong>main</strong> · Folder: <strong>/ (root)</strong> → Save</div></div>
+      <div class="gh-step"><div class="sno">5</div><div>Wait ~60 seconds → your URL is live! ✅</div></div>
+    </div>
+
+    <div class="gh-card" style="grid-column:1/-1;border-color:rgba(74,222,128,.3);background:rgba(74,222,128,.04)">
+      <div class="gh-title" style="color:var(--green)">🔄 Auto-Update: Dashboard syncs with Google Sheet automatically <span class="gh-badge b-easy">RECOMMENDED SETUP</span></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+        <div>
+          <div style="font-size:10px;color:var(--green);font-family:'Fira Code',monospace;letter-spacing:1px;margin-bottom:10px">STEP 1 — Publish Sheet as CSV (do this once per tab)</div>
+          <div class="gh-step"><div class="sno">1</div><div>In Google Sheets → <strong>File → Share → Publish to web</strong></div></div>
+          <div class="gh-step"><div class="sno">2</div><div>Select the production tab (e.g. "Production Global April 26") → format: <strong>CSV</strong> → click <strong>Publish</strong></div></div>
+          <div class="gh-step"><div class="sno">3</div><div>Copy the published URL — it looks like:<br><code style="font-size:9px;color:var(--cyan)">docs.google.com/spreadsheets/d/e/…/pub?gid=…&output=csv</code></div></div>
+          <div class="gh-step"><div class="sno">4</div><div>Share those CSV URLs with Claude → I'll update the dashboard to fetch live data on every page load</div></div>
+          <div class="gh-step"><div class="sno">5</div><div>Upload updated <code>index.html</code> to GitHub once — after that, just edit the Sheet and refresh the browser</div></div>
+        </div>
+        <div>
+          <div style="font-size:10px;color:var(--amber);font-family:'Fira Code',monospace;letter-spacing:1px;margin-bottom:10px">HOW IT WORKS AFTER SETUP</div>
+          <div class="code-block">
+            <span class="hl">You (monthly):</span><br>
+            Add new trips to Google Sheet<br><br>
+            <span class="hl">Dashboard (automatic):</span><br>
+            1. User opens GitHub Pages URL<br>
+            2. Dashboard fetches CSV from Sheet<br>
+            3. Parses &amp; renders new data live<br>
+            4. Weather also refreshes automatically<br><br>
+            <span class="hl">Result:</span> Zero work after initial setup ✅
+          </div>
+          <div style="font-size:9px;color:var(--t3);font-family:'Fira Code',monospace;margin-top:8px">Note: "Publish to web" is different from "Share". It creates a public read-only CSV export that doesn't require login to access.</div>
+        </div>
+      </div>
+    </div>
+      <div class="gh-step"><div class="sno">1</div><div>Get updated <code>index.html</code> from Claude (paste new data → regenerate)</div></div>
+      <div class="gh-step"><div class="sno">2</div><div>Go to your GitHub repo → find <code>index.html</code> → click the pencil ✏️</div></div>
+      <div class="gh-step"><div class="sno">3</div><div>Or use <strong>Add file → Upload files</strong> to overwrite the old one</div></div>
+      <div class="gh-step"><div class="sno">4</div><div>Commit → site updates automatically in 30 seconds</div></div>
+      <div class="code-block">Monthly workflow:<br><span class="hl">1.</span> Add new month's data to Google Sheet<br><span class="hl">2.</span> Share sheet link with Claude<br><span class="hl">3.</span> Get new index.html → upload to GitHub<br><span class="hl">4.</span> Done — team sees updated dashboard</div>
+    </div>
+
+  </div>
+
+</div>
+
+</div><!-- /main -->
+
+<script>
+// ══════════════════════════════════════════
+//  CONFIG
+// ══════════════════════════════════════════
+const LAT = -2.35, LON = 104.27;
+const DC = {Darminto:"#f59e0b",Awang:"#22d3ee",Rudi:"#4ade80",Julaikat:"#a78bfa",Riko:"#fb923c",Rahmat:"#34d399",Jhonson:"#f472b6",Kasmadi:"#60a5fa",Deddy:"#facc15",Wayan:"#c084fc",Irfan:"#2dd4bf"};
+
+// ══════════════════════════════════════════
+//  TRIP DATA
+// ══════════════════════════════════════════
+const JAN=[
+  {no:1,month:"Jan",date:"2026-01-01",driver:"Darminto",unit:"QBP 03",do_num:"765307",tonase:37.56,rp_per_km_ton:1400,revenue:3575712},
+  {no:2,month:"Jan",date:"2026-01-01",driver:"Rudi",unit:"QBP 01",do_num:"765313",tonase:35.64,rp_per_km_ton:1400,revenue:3392928},
+  {no:3,month:"Jan",date:"2026-01-08",driver:"Darminto",unit:"QBP 03",do_num:"765760",tonase:34.60,rp_per_km_ton:1400,revenue:3293920},
+  {no:4,month:"Jan",date:"2026-01-08",driver:"Darminto",unit:"QBP 03",do_num:"766088",tonase:34.17,rp_per_km_ton:1400,revenue:3252984},
+  {no:5,month:"Jan",date:"2026-01-10",driver:"Rudi",unit:"QBP 01",do_num:"766447",tonase:34.03,rp_per_km_ton:1400,revenue:3239656},
+  {no:6,month:"Jan",date:"2026-01-11",driver:"Awang",unit:"QBP 02",do_num:"766739",tonase:31.44,rp_per_km_ton:1400,revenue:2993088},
+  {no:7,month:"Jan",date:"2026-01-11",driver:"Darminto",unit:"QBP 03",do_num:"767002",tonase:33.01,rp_per_km_ton:1400,revenue:3142552},
+  {no:8,month:"Jan",date:"2026-01-13",driver:"Darminto",unit:"QBP 03",do_num:"767553",tonase:33.70,rp_per_km_ton:1400,revenue:3208240},
+  {no:9,month:"Jan",date:"2026-01-13",driver:"Rudi",unit:"QBP 01",do_num:"767554",tonase:32.73,rp_per_km_ton:1400,revenue:3115896},
+  {no:10,month:"Jan",date:"2026-01-14",driver:"Awang",unit:"QBP 02",do_num:"768028",tonase:32.57,rp_per_km_ton:1400,revenue:3100664},
+  {no:11,month:"Jan",date:"2026-01-14",driver:"Rudi",unit:"QBP 01",do_num:"768060",tonase:31.74,rp_per_km_ton:1400,revenue:3021648},
+  {no:12,month:"Jan",date:"2026-01-14",driver:"Darminto",unit:"QBP 03",do_num:"768658",tonase:33.56,rp_per_km_ton:1400,revenue:3194912},
+  {no:13,month:"Jan",date:"2026-01-15",driver:"Awang",unit:"QBP 02",do_num:"768957",tonase:32.33,rp_per_km_ton:1400,revenue:3077816},
+  {no:14,month:"Jan",date:"2026-01-15",driver:"Darminto",unit:"QBP 03",do_num:"769360",tonase:34.41,rp_per_km_ton:1400,revenue:3275832},
+  {no:15,month:"Jan",date:"2026-01-15",driver:"Rudi",unit:"QBP 01",do_num:"769151",tonase:32.75,rp_per_km_ton:1400,revenue:3117800},
+  {no:16,month:"Jan",date:"2026-01-16",driver:"Rudi",unit:"QBP 01",do_num:"769793",tonase:32.07,rp_per_km_ton:1400,revenue:3053064},
+  {no:17,month:"Jan",date:"2026-01-16",driver:"Awang",unit:"QBP 02",do_num:"770285",tonase:33.00,rp_per_km_ton:1400,revenue:3141600},
+  {no:18,month:"Jan",date:"2026-01-17",driver:"Darminto",unit:"QBP 03",do_num:"770340",tonase:33.51,rp_per_km_ton:1400,revenue:3190152},
+  {no:19,month:"Jan",date:"2026-01-18",driver:"Awang",unit:"QBP 02",do_num:"771143",tonase:30.96,rp_per_km_ton:1400,revenue:2947392},
+  {no:20,month:"Jan",date:"2026-01-18",driver:"Darminto",unit:"QBP 03",do_num:"771043",tonase:33.73,rp_per_km_ton:1400,revenue:3211096},
+  {no:21,month:"Jan",date:"2026-01-18",driver:"Rudi",unit:"QBP 01",do_num:"771537",tonase:33.58,rp_per_km_ton:1400,revenue:3196816},
+  {no:22,month:"Jan",date:"2026-01-18",driver:"Darminto",unit:"QBP 03",do_num:"771761",tonase:34.65,rp_per_km_ton:1400,revenue:3298680},
+  {no:23,month:"Jan",date:"2026-01-18",driver:"Awang",unit:"QBP 02",do_num:"771817",tonase:32.16,rp_per_km_ton:1400,revenue:3061632},
+  {no:24,month:"Jan",date:"2026-01-19",driver:"Darminto",unit:"QBP 03",do_num:"772431",tonase:33.34,rp_per_km_ton:1400,revenue:3173968},
+  {no:25,month:"Jan",date:"2026-01-20",driver:"Rudi",unit:"QBP 01",do_num:"772938",tonase:32.17,rp_per_km_ton:1400,revenue:3062584},
+  {no:26,month:"Jan",date:"2026-01-20",driver:"Awang",unit:"QBP 02",do_num:"773261",tonase:31.07,rp_per_km_ton:1400,revenue:2957864},
+  {no:27,month:"Jan",date:"2026-01-20",driver:"Julaikat",unit:"QBP 04",do_num:"773497",tonase:33.44,rp_per_km_ton:1400,revenue:3183488},
+  {no:28,month:"Jan",date:"2026-01-20",driver:"Awang",unit:"QBP 02",do_num:"774107",tonase:32.85,rp_per_km_ton:1400,revenue:3127320},
+  {no:29,month:"Jan",date:"2026-01-21",driver:"Darminto",unit:"QBP 03",do_num:"774822",tonase:34.22,rp_per_km_ton:1400,revenue:3257744},
+  {no:30,month:"Jan",date:"2026-01-21",driver:"Rudi",unit:"QBP 01",do_num:"774908",tonase:33.08,rp_per_km_ton:1400,revenue:3149216},
+  {no:31,month:"Jan",date:"2026-01-23",driver:"Rudi",unit:"QBP 01",do_num:"777398",tonase:33.14,rp_per_km_ton:1400,revenue:3154928},
+  {no:32,month:"Jan",date:"2026-01-25",driver:"Darminto",unit:"QBP 03",do_num:"777727",tonase:32.39,rp_per_km_ton:1400,revenue:3083528},
+  {no:33,month:"Jan",date:"2026-01-25",driver:"Awang",unit:"QBP 02",do_num:"777763",tonase:31.68,rp_per_km_ton:1400,revenue:3015936},
+  {no:34,month:"Jan",date:"2026-01-25",driver:"Julaikat",unit:"QBP 04",do_num:"778389",tonase:32.79,rp_per_km_ton:1400,revenue:3121608},
+  {no:35,month:"Jan",date:"2026-01-25",driver:"Awang",unit:"QBP 02",do_num:"778979",tonase:33.30,rp_per_km_ton:1400,revenue:3170160},
+  {no:36,month:"Jan",date:"2026-01-25",driver:"Darminto",unit:"QBP 03",do_num:"779103",tonase:34.71,rp_per_km_ton:1400,revenue:3304392},
+  {no:37,month:"Jan",date:"2026-01-25",driver:"Julaikat",unit:"QBP 04",do_num:"779524",tonase:32.91,rp_per_km_ton:1400,revenue:3133032},
+  {no:38,month:"Jan",date:"2026-01-25",driver:"Darminto",unit:"QBP 03",do_num:"779706",tonase:34.40,rp_per_km_ton:1400,revenue:3274880},
+  {no:39,month:"Jan",date:"2026-01-26",driver:"Julaikat",unit:"QBP 04",do_num:"780437",tonase:33.64,rp_per_km_ton:1400,revenue:3202528},
+  {no:40,month:"Jan",date:"2026-01-25",driver:"Awang",unit:"QBP 02",do_num:"780300",tonase:32.24,rp_per_km_ton:1400,revenue:3069248},
+  {no:41,month:"Jan",date:"2026-01-25",driver:"Riko",unit:"QBP 01",do_num:"780577",tonase:33.31,rp_per_km_ton:1400,revenue:3171112},
+  {no:42,month:"Jan",date:"2026-01-26",driver:"Darminto",unit:"QBP 05",do_num:"780802",tonase:32.70,rp_per_km_ton:1400,revenue:3113040},
+  {no:43,month:"Jan",date:"2026-01-26",driver:"Awang",unit:"QBP 02",do_num:"781505",tonase:33.10,rp_per_km_ton:1400,revenue:3151120},
+  {no:44,month:"Jan",date:"2026-01-26",driver:"Riko",unit:"QBP 01",do_num:"781465",tonase:33.93,rp_per_km_ton:1400,revenue:3230136},
+  {no:45,month:"Jan",date:"2026-01-26",driver:"Darminto",unit:"QBP 03",do_num:"782181",tonase:33.80,rp_per_km_ton:1400,revenue:3217760},
+  {no:46,month:"Jan",date:"2026-01-26",driver:"Julaikat",unit:"QBP 04",do_num:"782194",tonase:31.33,rp_per_km_ton:1400,revenue:2982616},
+  {no:47,month:"Jan",date:"2026-01-27",driver:"Darminto",unit:"QBP 03",do_num:"783086",tonase:34.30,rp_per_km_ton:1400,revenue:3265360},
+  {no:48,month:"Jan",date:"2026-01-27",driver:"Julaikat",unit:"QBP 04",do_num:"783163",tonase:32.77,rp_per_km_ton:1400,revenue:3119704},
+  {no:49,month:"Jan",date:"2026-01-28",driver:"Julaikat",unit:"QBP 04",do_num:"783875",tonase:31.85,rp_per_km_ton:1400,revenue:3032120},
+  {no:50,month:"Jan",date:"2026-01-28",driver:"Darminto",unit:"QBP 03",do_num:"784544",tonase:33.92,rp_per_km_ton:1400,revenue:3229184},
+  {no:51,month:"Jan",date:"2026-01-28",driver:"Riko",unit:"QBP 01",do_num:"784756",tonase:32.65,rp_per_km_ton:1400,revenue:3108280},
+  {no:52,month:"Jan",date:"2026-01-28",driver:"Awang",unit:"QBP 02",do_num:"784985",tonase:32.87,rp_per_km_ton:1400,revenue:3129224},
+  {no:53,month:"Jan",date:"2026-01-29",driver:"Julaikat",unit:"QBP 04",do_num:"785751",tonase:32.45,rp_per_km_ton:1400,revenue:3089240},
+  {no:54,month:"Jan",date:"2026-01-29",driver:"Awang",unit:"QBP 02",do_num:"785758",tonase:30.67,rp_per_km_ton:1400,revenue:2919784},
+  {no:55,month:"Jan",date:"2026-01-30",driver:"Riko",unit:"QBP 01",do_num:"786470",tonase:31.47,rp_per_km_ton:1400,revenue:2995944},
+  {no:56,month:"Jan",date:"2026-01-31",driver:"Darminto",unit:"QBP 03",do_num:"787274",tonase:33.54,rp_per_km_ton:1400,revenue:3193008},
+  {no:57,month:"Jan",date:"2026-01-30",driver:"Julaikat",unit:"QBP 04",do_num:"787090",tonase:33.57,rp_per_km_ton:1400,revenue:3195864},
+];
+const FEB=[
+  {no:1,month:"Feb",date:"2026-02-09",driver:"Awang",unit:"QBP 02",do_num:"794951",tonase:33.46,rp_per_km_ton:1550,revenue:3526684},
+  {no:2,month:"Feb",date:"2026-02-09",driver:"Darminto",unit:"QBP 03",do_num:"795390",tonase:31.46,rp_per_km_ton:1550,revenue:3315884},
+  {no:3,month:"Feb",date:"2026-02-09",driver:"Rahmat",unit:"QBP 01",do_num:"795820",tonase:31.79,rp_per_km_ton:1550,revenue:3350666},
+  {no:4,month:"Feb",date:"2026-02-10",driver:"Awang",unit:"QBP 02",do_num:"796233",tonase:31.04,rp_per_km_ton:1550,revenue:3271616},
+  {no:5,month:"Feb",date:"2026-02-10",driver:"Julaikat",unit:"QBP 04",do_num:"796904",tonase:32.26,rp_per_km_ton:1550,revenue:3400204},
+  {no:6,month:"Feb",date:"2026-02-11",driver:"Awang",unit:"QBP 02",do_num:"797802",tonase:29.58,rp_per_km_ton:1550,revenue:3117732},
+  {no:7,month:"Feb",date:"2026-02-11",driver:"Julaikat",unit:"QBP 04",do_num:"798113",tonase:32.21,rp_per_km_ton:1550,revenue:3394934},
+  {no:8,month:"Feb",date:"2026-02-11",driver:"Darminto",unit:"QBP 03",do_num:"798437",tonase:32.32,rp_per_km_ton:1550,revenue:3406528},
+  {no:9,month:"Feb",date:"2026-02-11",driver:"Rahmat",unit:"QBP 01",do_num:"798579",tonase:32.52,rp_per_km_ton:1550,revenue:3427608},
+  {no:10,month:"Feb",date:"2026-02-04",driver:"Riko",unit:"QBP 03",do_num:"789364",tonase:30.04,rp_per_km_ton:1550,revenue:3166216},
+  {no:11,month:"Feb",date:"2026-02-09",driver:"Awang",unit:"QBP 01",do_num:"794951b",tonase:33.46,rp_per_km_ton:1550,revenue:3526684},
+  {no:12,month:"Feb",date:"2026-02-09",driver:"Darminto",unit:"QBP 02",do_num:"795390b",tonase:31.46,rp_per_km_ton:1550,revenue:3315884},
+  {no:13,month:"Feb",date:"2026-02-10",driver:"Rahmat",unit:"QBP 04",do_num:"795820b",tonase:31.79,rp_per_km_ton:1550,revenue:3350666},
+  {no:14,month:"Feb",date:"2026-02-10",driver:"Awang",unit:"QBP 02",do_num:"796233b",tonase:31.04,rp_per_km_ton:1550,revenue:3271616},
+  {no:15,month:"Feb",date:"2026-02-11",driver:"Julaikat",unit:"QBP 04",do_num:"798113b",tonase:32.21,rp_per_km_ton:1550,revenue:3394934},
+  {no:16,month:"Feb",date:"2026-02-11",driver:"Darminto",unit:"QBP 03",do_num:"798437b",tonase:32.32,rp_per_km_ton:1550,revenue:3406528},
+  {no:17,month:"Feb",date:"2026-02-11",driver:"Rahmat",unit:"QBP 01",do_num:"798579b",tonase:32.52,rp_per_km_ton:1550,revenue:3427608},
+  {no:18,month:"Feb",date:"2026-02-12",driver:"Julaikat",unit:"QBP 04",do_num:"799311",tonase:29.91,rp_per_km_ton:1550,revenue:3152514},
+  {no:19,month:"Feb",date:"2026-02-12",driver:"Awang",unit:"QBP 02",do_num:"800085",tonase:30.38,rp_per_km_ton:1550,revenue:3202052},
+  {no:20,month:"Feb",date:"2026-02-12",driver:"Darminto",unit:"QBP 03",do_num:"800094",tonase:32.72,rp_per_km_ton:1550,revenue:3448688},
+  {no:21,month:"Feb",date:"2026-02-12",driver:"Julaikat",unit:"QBP 04",do_num:"800434",tonase:31.98,rp_per_km_ton:1550,revenue:3370692},
+  {no:22,month:"Feb",date:"2026-02-13",driver:"Jhonson",unit:"QBP 05",do_num:"800676",tonase:28.69,rp_per_km_ton:1550,revenue:3023926},
+  {no:23,month:"Feb",date:"2026-02-13",driver:"Julaikat",unit:"QBP 04",do_num:"801367",tonase:30.37,rp_per_km_ton:1550,revenue:3200998},
+  {no:24,month:"Feb",date:"2026-02-13",driver:"Darminto",unit:"QBP 03",do_num:"801393",tonase:31.42,rp_per_km_ton:1550,revenue:3311668},
+  {no:25,month:"Feb",date:"2026-02-13",driver:"Rahmat",unit:"QBP 01",do_num:"801455",tonase:30.07,rp_per_km_ton:1550,revenue:3169378},
+  {no:26,month:"Feb",date:"2026-02-13",driver:"Awang",unit:"QBP 02",do_num:"801484",tonase:30.72,rp_per_km_ton:1550,revenue:3237888},
+  {no:27,month:"Feb",date:"2026-02-14",driver:"Jhonson",unit:"QBP 05",do_num:"801603",tonase:28.73,rp_per_km_ton:1550,revenue:3028142},
+  {no:28,month:"Feb",date:"2026-02-14",driver:"Julaikat",unit:"QBP 04",do_num:"802313",tonase:30.24,rp_per_km_ton:1550,revenue:3187296},
+  {no:29,month:"Feb",date:"2026-02-15",driver:"Jhonson",unit:"QBP 05",do_num:"802630",tonase:31.95,rp_per_km_ton:1550,revenue:3367530},
+  {no:30,month:"Feb",date:"2026-02-15",driver:"Darminto",unit:"QBP 03",do_num:"802840",tonase:31.38,rp_per_km_ton:1550,revenue:3307452},
+  {no:31,month:"Feb",date:"2026-02-16",driver:"Awang",unit:"QBP 02",do_num:"803300",tonase:31.17,rp_per_km_ton:1550,revenue:3285318},
+  {no:32,month:"Feb",date:"2026-02-16",driver:"Jhonson",unit:"QBP 05",do_num:"803337",tonase:31.06,rp_per_km_ton:1550,revenue:3273724},
+  {no:33,month:"Feb",date:"2026-02-16",driver:"Rahmat",unit:"QBP 01",do_num:"803390",tonase:31.37,rp_per_km_ton:1550,revenue:3306398},
+  {no:34,month:"Feb",date:"2026-02-17",driver:"Jhonson",unit:"QBP 05",do_num:"804151",tonase:31.60,rp_per_km_ton:1550,revenue:3330640},
+  {no:35,month:"Feb",date:"2026-02-17",driver:"Darminto",unit:"QBP 03",do_num:"804634",tonase:31.31,rp_per_km_ton:1550,revenue:3300074},
+  {no:36,month:"Feb",date:"2026-02-17",driver:"Julaikat",unit:"QBP 04",do_num:"804340",tonase:32.70,rp_per_km_ton:1550,revenue:3446580},
+  {no:37,month:"Feb",date:"2026-02-18",driver:"Jhonson",unit:"QBP 05",do_num:"805214",tonase:31.25,rp_per_km_ton:1550,revenue:3293750},
+  {no:38,month:"Feb",date:"2026-02-18",driver:"Julaikat",unit:"QBP 04",do_num:"805497",tonase:30.07,rp_per_km_ton:1550,revenue:3169378},
+  {no:39,month:"Feb",date:"2026-02-18",driver:"Awang",unit:"QBP 02",do_num:"805476",tonase:31.30,rp_per_km_ton:1550,revenue:3299020},
+  {no:40,month:"Feb",date:"2026-02-18",driver:"Rahmat",unit:"QBP 01",do_num:"805796",tonase:30.43,rp_per_km_ton:1550,revenue:3207322},
+  {no:41,month:"Feb",date:"2026-02-18",driver:"Darminto",unit:"QBP 03",do_num:"806007",tonase:31.05,rp_per_km_ton:1550,revenue:3272670},
+  {no:42,month:"Feb",date:"2026-02-19",driver:"Jhonson",unit:"QBP 05",do_num:"806458",tonase:30.41,rp_per_km_ton:1550,revenue:3205214},
+  {no:43,month:"Feb",date:"2026-02-19",driver:"Julaikat",unit:"QBP 04",do_num:"806717",tonase:32.11,rp_per_km_ton:1550,revenue:3384394},
+  {no:44,month:"Feb",date:"2026-02-19",driver:"Darminto",unit:"QBP 03",do_num:"806750",tonase:32.84,rp_per_km_ton:1550,revenue:3461336},
+  {no:45,month:"Feb",date:"2026-02-19",driver:"Jhonson",unit:"QBP 05",do_num:"807343",tonase:31.43,rp_per_km_ton:1550,revenue:3312722},
+  {no:46,month:"Feb",date:"2026-02-19",driver:"Awang",unit:"QBP 02",do_num:"807285",tonase:30.44,rp_per_km_ton:1550,revenue:3208376},
+  {no:47,month:"Feb",date:"2026-02-19",driver:"Julaikat",unit:"QBP 04",do_num:"807672",tonase:31.55,rp_per_km_ton:1550,revenue:3325370},
+  {no:48,month:"Feb",date:"2026-02-20",driver:"Rahmat",unit:"QBP 01",do_num:"808282",tonase:34.12,rp_per_km_ton:1550,revenue:3596248},
+  {no:49,month:"Feb",date:"2026-02-20",driver:"Darminto",unit:"QBP 03",do_num:"808534",tonase:30.23,rp_per_km_ton:1550,revenue:3186242},
+  {no:50,month:"Feb",date:"2026-02-20",driver:"Awang",unit:"QBP 02",do_num:"808687",tonase:31.32,rp_per_km_ton:1550,revenue:3301128},
+  {no:51,month:"Feb",date:"2026-02-21",driver:"Jhonson",unit:"QBP 05",do_num:"808831",tonase:31.47,rp_per_km_ton:1550,revenue:3316938},
+  {no:52,month:"Feb",date:"2026-02-21",driver:"Julaikat",unit:"QBP 04",do_num:"808892",tonase:32.73,rp_per_km_ton:1550,revenue:3449742},
+  {no:53,month:"Feb",date:"2026-02-21",driver:"Julaikat",unit:"QBP 04",do_num:"809878",tonase:30.42,rp_per_km_ton:1550,revenue:3206268},
+  {no:54,month:"Feb",date:"2026-02-21",driver:"Darminto",unit:"QBP 03",do_num:"809838",tonase:31.72,rp_per_km_ton:1550,revenue:3343288},
+  {no:55,month:"Feb",date:"2026-02-22",driver:"Rahmat",unit:"QBP 01",do_num:"810279",tonase:31.26,rp_per_km_ton:1550,revenue:3294804},
+  {no:56,month:"Feb",date:"2026-02-22",driver:"Jhonson",unit:"QBP 05",do_num:"810348",tonase:28.92,rp_per_km_ton:1550,revenue:3048168},
+  {no:57,month:"Feb",date:"2026-02-22",driver:"Julaikat",unit:"QBP 04",do_num:"810825",tonase:31.31,rp_per_km_ton:1550,revenue:3300074},
+  {no:58,month:"Feb",date:"2026-02-22",driver:"Awang",unit:"QBP 02",do_num:"810960",tonase:30.98,rp_per_km_ton:1550,revenue:3265292},
+  {no:59,month:"Feb",date:"2026-02-22",driver:"Darminto",unit:"QBP 03",do_num:"811176",tonase:32.00,rp_per_km_ton:1550,revenue:3372800},
+  {no:60,month:"Feb",date:"2026-02-23",driver:"Jhonson",unit:"QBP 05",do_num:"811384",tonase:31.93,rp_per_km_ton:1550,revenue:3365422},
+  {no:61,month:"Feb",date:"2026-02-24",driver:"Awang",unit:"QBP 02",do_num:"812451",tonase:33.43,rp_per_km_ton:1550,revenue:3523522},
+  {no:62,month:"Feb",date:"2026-02-24",driver:"Darminto",unit:"QBP 03",do_num:"812605",tonase:32.64,rp_per_km_ton:1550,revenue:3440256},
+  {no:63,month:"Feb",date:"2026-02-24",driver:"Rahmat",unit:"QBP 01",do_num:"812741",tonase:32.43,rp_per_km_ton:1550,revenue:3418122},
+  {no:64,month:"Feb",date:"2026-02-24",driver:"Jhonson",unit:"QBP 05",do_num:"813063",tonase:31.10,rp_per_km_ton:1550,revenue:3277940},
+  {no:65,month:"Feb",date:"2026-02-25",driver:"Julaikat",unit:"QBP 04",do_num:"813167",tonase:29.20,rp_per_km_ton:1550,revenue:3077680},
+  {no:66,month:"Feb",date:"2026-02-25",driver:"Julaikat",unit:"QBP 04",do_num:"813866",tonase:30.62,rp_per_km_ton:1550,revenue:3227348},
+  {no:67,month:"Feb",date:"2026-02-26",driver:"Jhonson",unit:"QBP 05",do_num:"814077",tonase:30.58,rp_per_km_ton:1550,revenue:3223132},
+  {no:68,month:"Feb",date:"2026-02-26",driver:"Awang",unit:"QBP 02",do_num:"814314",tonase:31.90,rp_per_km_ton:1550,revenue:3362260},
+  {no:69,month:"Feb",date:"2026-02-26",driver:"Darminto",unit:"QBP 03",do_num:"814298",tonase:32.02,rp_per_km_ton:1550,revenue:3374908},
+  {no:70,month:"Feb",date:"2026-02-27",driver:"Rahmat",unit:"QBP 01",do_num:"8151111",tonase:30.91,rp_per_km_ton:1550,revenue:3257914},
+  {no:71,month:"Feb",date:"2026-02-27",driver:"Jhonson",unit:"QBP 05",do_num:"815153",tonase:28.87,rp_per_km_ton:1550,revenue:3042898},
+  {no:72,month:"Feb",date:"2026-02-27",driver:"Julaikat",unit:"QBP 04",do_num:"815389",tonase:31.06,rp_per_km_ton:1550,revenue:3273724},
+  {no:73,month:"Feb",date:"2026-02-27",driver:"Darminto",unit:"QBP 03",do_num:"815612",tonase:31.66,rp_per_km_ton:1550,revenue:3336964},
+  {no:74,month:"Feb",date:"2026-02-27",driver:"Awang",unit:"QBP 02",do_num:"815726",tonase:31.10,rp_per_km_ton:1550,revenue:3277940},
+  {no:75,month:"Feb",date:"2026-02-28",driver:"Julaikat",unit:"QBP 04",do_num:"816189",tonase:32.21,rp_per_km_ton:1550,revenue:3394934},
+  {no:76,month:"Feb",date:"2026-02-28",driver:"Jhonson",unit:"QBP 05",do_num:"816338",tonase:30.52,rp_per_km_ton:1550,revenue:3216808},
+  {no:77,month:"Feb",date:"2026-02-28",driver:"Darminto",unit:"QBP 03",do_num:"816668",tonase:32.75,rp_per_km_ton:1550,revenue:3451850},
+  {no:78,month:"Feb",date:"2026-02-28",driver:"Julaikat",unit:"QBP 04",do_num:"817001",tonase:31.05,rp_per_km_ton:1550,revenue:3272670},
+  {no:79,month:"Feb",date:"2026-02-28",driver:"Rahmat",unit:"QBP 01",do_num:"816858",tonase:30.83,rp_per_km_ton:1550,revenue:3249482},
+  {no:80,month:"Feb",date:"2026-02-28",driver:"Jhonson",unit:"QBP 05",do_num:"817073",tonase:32.12,rp_per_km_ton:1550,revenue:3385448},
+  {no:81,month:"Feb",date:"2026-02-28",driver:"Awang",unit:"QBP 02",do_num:"817215",tonase:31.56,rp_per_km_ton:1550,revenue:3326424},
+  {no:82,month:"Feb",date:"2026-03-01",driver:"Darminto",unit:"QBP 03",do_num:"818016",tonase:30.03,rp_per_km_ton:1550,revenue:3165162},
+];
+const APR=[
+  {no:1,month:"Apr",date:"2026-04-01",driver:"Jhonson",unit:"QBP 05",do_num:"853929",tonase:32.47,rp_per_km_ton:1550,revenue:3422338},
+  {no:2,month:"Apr",date:"2026-04-02",driver:"Kasmadi",unit:"QBP 01",do_num:"855187",tonase:29.42,rp_per_km_ton:1550,revenue:3100868},
+  {no:3,month:"Apr",date:"2026-04-02",driver:"Jhonson",unit:"QBP 05",do_num:"855275",tonase:27.95,rp_per_km_ton:1550,revenue:2945930},
+  {no:4,month:"Apr",date:"2026-04-02",driver:"Awang",unit:"QBP 02",do_num:"855491",tonase:31.31,rp_per_km_ton:1550,revenue:3300074},
+  {no:5,month:"Apr",date:"2026-04-03",driver:"Kasmadi",unit:"QBP 01",do_num:"855932",tonase:28.84,rp_per_km_ton:1550,revenue:3039736},
+  {no:6,month:"Apr",date:"2026-04-04",driver:"Julaikat",unit:"QBP 04",do_num:"856441",tonase:32.68,rp_per_km_ton:1550,revenue:3444472},
+  {no:7,month:"Apr",date:"2026-04-04",driver:"Darminto",unit:"QBP 03",do_num:"846513",tonase:30.88,rp_per_km_ton:1550,revenue:3254752},
+  {no:8,month:"Apr",date:"2026-04-04",driver:"Kasmadi",unit:"QBP 01",do_num:"856671",tonase:31.24,rp_per_km_ton:1550,revenue:3292696},
+  {no:9,month:"Apr",date:"2026-04-04",driver:"Jhonson",unit:"QBP 05",do_num:"856690",tonase:31.75,rp_per_km_ton:1550,revenue:3346450},
+  {no:10,month:"Apr",date:"2026-04-04",driver:"Awang",unit:"QBP 02",do_num:"856854",tonase:32.11,rp_per_km_ton:1550,revenue:3384394},
+  {no:11,month:"Apr",date:"2026-04-05",driver:"Kasmadi",unit:"QBP 01",do_num:"858076",tonase:31.23,rp_per_km_ton:1550,revenue:3291642},
+  {no:12,month:"Apr",date:"2026-04-05",driver:"Julaikat",unit:"QBP 04",do_num:"857509",tonase:28.52,rp_per_km_ton:1550,revenue:3006008},
+  {no:13,month:"Apr",date:"2026-04-05",driver:"Jhonson",unit:"QBP 05",do_num:"857992",tonase:31.52,rp_per_km_ton:1550,revenue:3322208},
+  {no:14,month:"Apr",date:"2026-04-06",driver:"Julaikat",unit:"QBP 04",do_num:"858644",tonase:32.18,rp_per_km_ton:1550,revenue:3391772},
+  {no:15,month:"Apr",date:"2026-04-07",driver:"Jhonson",unit:"QBP 05",do_num:"859258",tonase:27.89,rp_per_km_ton:1550,revenue:2939606},
+  {no:16,month:"Apr",date:"2026-04-07",driver:"Kasmadi",unit:"QBP 01",do_num:"859259",tonase:28.82,rp_per_km_ton:1550,revenue:3037628},
+  {no:17,month:"Apr",date:"2026-04-07",driver:"Darminto",unit:"QBP 03",do_num:"859495",tonase:30.04,rp_per_km_ton:1550,revenue:3166216},
+  {no:18,month:"Apr",date:"2026-04-07",driver:"Deddy",unit:"QBP 02",do_num:"859700",tonase:31.43,rp_per_km_ton:1550,revenue:3312722},
+  {no:19,month:"Apr",date:"2026-04-07",driver:"Jhonson",unit:"QBP 05",do_num:"860149",tonase:31.28,rp_per_km_ton:1550,revenue:3296912},
+  {no:20,month:"Apr",date:"2026-04-08",driver:"Deddy",unit:"QBP 02",do_num:"860746",tonase:30.82,rp_per_km_ton:1550,revenue:3248428},
+  {no:21,month:"Apr",date:"2026-04-08",driver:"Kasmadi",unit:"QBP 01",do_num:"860567",tonase:31.17,rp_per_km_ton:1550,revenue:3285318},
+  {no:22,month:"Apr",date:"2026-04-09",driver:"Julaikat",unit:"QBP 04",do_num:"860996",tonase:31.73,rp_per_km_ton:1550,revenue:3344342},
+  {no:23,month:"Apr",date:"2026-04-09",driver:"Darminto",unit:"QBP 03",do_num:"860926",tonase:30.64,rp_per_km_ton:1550,revenue:3229456},
+  {no:24,month:"Apr",date:"2026-04-09",driver:"Jhonson",unit:"QBP 05",do_num:"861243",tonase:30.66,rp_per_km_ton:1550,revenue:3231564},
+  {no:25,month:"Apr",date:"2026-04-09",driver:"Kasmadi",unit:"QBP 01",do_num:"861310",tonase:29.68,rp_per_km_ton:1550,revenue:3128272},
+  {no:26,month:"Apr",date:"2026-04-09",driver:"Julaikat",unit:"QBP 04",do_num:"861483",tonase:31.46,rp_per_km_ton:1550,revenue:3315884},
+  {no:27,month:"Apr",date:"2026-04-09",driver:"Jhonson",unit:"QBP 05",do_num:"861778",tonase:31.34,rp_per_km_ton:1550,revenue:3303236},
+  {no:28,month:"Apr",date:"2026-04-10",driver:"Julaikat",unit:"QBP 04",do_num:"862087",tonase:29.22,rp_per_km_ton:1550,revenue:3079788},
+  {no:29,month:"Apr",date:"2026-04-09",driver:"Deddy",unit:"QBP 02",do_num:"861492",tonase:31.49,rp_per_km_ton:1550,revenue:3319046},
+  {no:30,month:"Apr",date:"2026-04-10",driver:"Kasmadi",unit:"QBP 01",do_num:"870154",tonase:30.05,rp_per_km_ton:1550,revenue:3167270},
+  {no:31,month:"Apr",date:"2026-04-10",driver:"Darminto",unit:"QBP 03",do_num:"862158",tonase:30.41,rp_per_km_ton:1550,revenue:3205214},
+  {no:32,month:"Apr",date:"2026-04-10",driver:"Deddy",unit:"QBP 02",do_num:"870435",tonase:31.10,rp_per_km_ton:1550,revenue:3277940},
+  {no:33,month:"Apr",date:"2026-04-10",driver:"Jhonson",unit:"QBP 05",do_num:"870356",tonase:32.34,rp_per_km_ton:1550,revenue:3408636},
+  {no:34,month:"Apr",date:"2026-04-10",driver:"Julaikat",unit:"QBP 04",do_num:"870445",tonase:31.45,rp_per_km_ton:1550,revenue:3314830},
+  {no:35,month:"Apr",date:"2026-04-12",driver:"Kasmadi",unit:"QBP 01",do_num:"871610",tonase:32.44,rp_per_km_ton:1550,revenue:3419176},
+  {no:36,month:"Apr",date:"2026-04-11",driver:"Julaikat",unit:"QBP 04",do_num:"871140",tonase:31.01,rp_per_km_ton:1550,revenue:3268454},
+  {no:37,month:"Apr",date:"2026-04-12",driver:"Jhonson",unit:"QBP 05",do_num:"871809",tonase:29.47,rp_per_km_ton:1550,revenue:3106138},
+  {no:38,month:"Apr",date:"2026-04-12",driver:"Julaikat",unit:"QBP 04",do_num:"871732",tonase:30.79,rp_per_km_ton:1550,revenue:3245266},
+  {no:39,month:"Apr",date:"2026-04-13",driver:"Kasmadi",unit:"QBP 01",do_num:"872631",tonase:31.47,rp_per_km_ton:1550,revenue:3316938},
+  {no:40,month:"Apr",date:"2026-04-13",driver:"Julaikat",unit:"QBP 04",do_num:"872576",tonase:32.34,rp_per_km_ton:1550,revenue:3408636},
+  {no:41,month:"Apr",date:"2026-04-13",driver:"Jhonson",unit:"QBP 05",do_num:"872923",tonase:31.99,rp_per_km_ton:1550,revenue:3371746},
+  {no:42,month:"Apr",date:"2026-04-13",driver:"Wayan",unit:"QBP 02",do_num:"873574",tonase:31.74,rp_per_km_ton:1550,revenue:3345396},
+  {no:43,month:"Apr",date:"2026-04-13",driver:"Kasmadi",unit:"QBP 01",do_num:"873810",tonase:30.83,rp_per_km_ton:1550,revenue:3249482},
+  {no:44,month:"Apr",date:"2026-04-14",driver:"Jhonson",unit:"QBP 05",do_num:"874000",tonase:33.31,rp_per_km_ton:1550,revenue:3510874},
+  {no:45,month:"Apr",date:"2026-04-15",driver:"Kasmadi",unit:"QBP 01",do_num:"875677",tonase:30.96,rp_per_km_ton:1550,revenue:3263184},
+  {no:46,month:"Apr",date:"2026-04-15",driver:"Wayan",unit:"QBP 02",do_num:"875961",tonase:30.21,rp_per_km_ton:1550,revenue:3184134},
+  {no:47,month:"Apr",date:"2026-04-16",driver:"Jhonson",unit:"QBP 05",do_num:"876318",tonase:32.31,rp_per_km_ton:1550,revenue:3405474},
+  {no:48,month:"Apr",date:"2026-04-16",driver:"Kasmadi",unit:"QBP 01",do_num:"876770",tonase:32.43,rp_per_km_ton:1550,revenue:3418122},
+  {no:49,month:"Apr",date:"2026-04-16",driver:"Julaikat",unit:"QBP 04",do_num:"877208",tonase:31.92,rp_per_km_ton:1550,revenue:3364368},
+  {no:50,month:"Apr",date:"2026-04-17",driver:"Wayan",unit:"QBP 02",do_num:"877717",tonase:30.55,rp_per_km_ton:1550,revenue:3219970},
+  {no:51,month:"Apr",date:"2026-04-17",driver:"Julaikat",unit:"QBP 04",do_num:"878119",tonase:31.90,rp_per_km_ton:1550,revenue:3362260},
+  {no:52,month:"Apr",date:"2026-04-17",driver:"Kasmadi",unit:"QBP 01",do_num:"878194",tonase:30.82,rp_per_km_ton:1550,revenue:3248428},
+  {no:53,month:"Apr",date:"2026-04-18",driver:"Julaikat",unit:"QBP 04",do_num:"878821",tonase:30.44,rp_per_km_ton:1550,revenue:3208376},
+  {no:54,month:"Apr",date:"2026-04-18",driver:"Kasmadi",unit:"QBP 01",do_num:"879468",tonase:31.02,rp_per_km_ton:1550,revenue:3269508},
+  {no:55,month:"Apr",date:"2026-04-19",driver:"Jhonson",unit:"QBP 05",do_num:"879896",tonase:31.63,rp_per_km_ton:1550,revenue:3333802},
+  {no:56,month:"Apr",date:"2026-04-19",driver:"Wayan",unit:"QBP 02",do_num:"880419",tonase:31.93,rp_per_km_ton:1550,revenue:3365422},
+  {no:57,month:"Apr",date:"2026-04-20",driver:"Kasmadi",unit:"QBP 01",do_num:"881112",tonase:31.78,rp_per_km_ton:1550,revenue:3349612},
+  {no:58,month:"Apr",date:"2026-04-20",driver:"Jhonson",unit:"QBP 05",do_num:"881595",tonase:32.33,rp_per_km_ton:1550,revenue:3407582},
+  {no:59,month:"Apr",date:"2026-04-20",driver:"Irfan",unit:"QBP 03",do_num:"882015",tonase:30.54,rp_per_km_ton:1550,revenue:3218916},
+  {no:60,month:"Apr",date:"2026-04-21",driver:"Kasmadi",unit:"QBP 01",do_num:"882772",tonase:31.12,rp_per_km_ton:1550,revenue:3280048},
+];
+const ALL_TRIPS=[...JAN,...FEB,...APR];
+
+// ══════════════════════════════════════════
+//  LIVE GOOGLE SHEETS AUTO-UPDATE
+// ══════════════════════════════════════════
+// gviz/tq endpoint has better CORS support than published URL
+const GVIZ_BASE = 'https://docs.google.com/spreadsheets/d/1UCynS37vT7MrOPyJkpal822-cw1FNz7ApB7RsIvbMz8/gviz/tq?tqx=out:csv';
+const LIVE_URLS = {
+  jan: `${GVIZ_BASE}&gid=797450319`,
+  feb: `${GVIZ_BASE}&gid=1176974908`,
+  apr: `${GVIZ_BASE}&gid=1022974330`,
+};
+
+function parseDDMMYY(s) {
+  if (!s || typeof s !== 'string') return null;
+  s = s.trim();
+  const p = s.split('/');
+  if (p.length !== 3) return null;
+  const [d, m, y] = p;
+  const yr = y.length === 2 ? '20' + y : y;
+  return `${yr}-${m.padStart(2,'0')}-${d.padStart(2,'0')}`;
+}
+
+function parseCSVLine(line) {
+  const result = [];
+  let cur = '', inQ = false;
+  for (let i = 0; i < line.length; i++) {
+    const c = line[i];
+    if (c === '"') { inQ = !inQ; }
+    else if (c === ',' && !inQ) { result.push(cur.trim()); cur = ''; }
+    else { cur += c; }
+  }
+  result.push(cur.trim());
+  return result;
+}
+
+function parseRevenue(s) {
+  if (!s) return 0;
+  return parseFloat(s.replace(/[^0-9.]/g, '')) || 0;
+}
+
+function parseProductionCSV(csvText, monthLabel) {
+  const lines = csvText.split('\n').filter(l => l.trim());
+  const trips = [];
+  // Skip first 2 header rows
+  for (let i = 2; i < lines.length; i++) {
+    const cols = parseCSVLine(lines[i]);
+    const noRaw = cols[0];
+    if (!noRaw || isNaN(parseInt(noRaw))) continue;
+    const tonase = parseFloat(cols[9]);
+    if (!tonase || tonase <= 0) continue;
+    const dumpDate = parseDDMMYY(cols[6]);
+    if (!dumpDate) continue;
+    const driver = (cols[10] || '').trim().replace(/^\s+/, '');
+    const unit = (cols[18] || '').trim().replace(/^\s+/, '');
+    const revenue = parseRevenue(cols[17]);
+    const rate = parseInt((cols[16] || '1400').replace(/[^0-9]/g, '')) || 1400;
+    trips.push({
+      no: parseInt(noRaw),
+      month: monthLabel,
+      date: dumpDate,
+      driver,
+      unit,
+      do_num: (cols[2] || '').trim(),
+      tonase,
+      rp_per_km_ton: rate,
+      revenue,
+    });
+  }
+  return trips;
+}
+
+let liveDataLoaded = false;
+
+function isSandboxed() {
+  // Detect local file, Claude preview, or other sandboxed contexts
+  const proto = window.location.protocol;
+  const host = window.location.hostname;
+  return proto === 'file:' || host === '' || host.includes('claude.ai') || host.includes('anthropic.com');
+}
+
+async function fetchLiveData() {
+  if (isSandboxed()) {
+    const s = document.getElementById('liveStatus');
+    if (s) { s.textContent = '📋 Local/preview mode — open GitHub Pages URL for live data'; s.style.color = 'var(--t3)'; }
+    document.getElementById('lastUpdated').textContent = 'Cached · Jan + Feb + Apr 2026';
+    return;
+  }
+  const statusEl = document.getElementById('liveStatus');
+  if (statusEl) { statusEl.textContent = '⟳ Fetching live data...'; statusEl.style.color = 'var(--amber)'; }
+  
+  const results = { jan: null, feb: null, apr: null };
+  const labels = { jan: 'Jan', feb: 'Feb', apr: 'Apr' };
+  let loaded = 0, failed = 0;
+
+  await Promise.allSettled(
+    Object.entries(LIVE_URLS).map(async ([key, url]) => {
+      try {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const text = await res.text();
+        const trips = parseProductionCSV(text, labels[key]);
+        if (trips.length > 0) { results[key] = trips; loaded++; }
+        else failed++;
+      } catch(e) { failed++; console.info('Sheet fetch skipped (CORS/network):', key, e.message); }
+    })
+  );
+
+  if (loaded > 0) {
+    const combined = [
+      ...(results.jan || JAN),
+      ...(results.feb || FEB),
+      ...(results.apr || APR),
+    ];
+    // Replace ALL_TRIPS contents
+    ALL_TRIPS.length = 0;
+    combined.forEach(t => ALL_TRIPS.push(t));
+
+    // Update tab counts
+    const totEl = document.getElementById('mb-all');
+    if (totEl) totEl.textContent = ALL_TRIPS.length;
+
+    liveDataLoaded = true;
+    const ts = new Date().toLocaleTimeString('id-ID');
+    if (statusEl) { statusEl.textContent = `✓ Live data: ${ALL_TRIPS.length} trips · ${ts}`; statusEl.style.color = 'var(--green)'; }
+    document.getElementById('lastUpdated').textContent = `Live · ${ts}`;
+    renderAll();
+  } else {
+    if (statusEl) { statusEl.textContent = `⚠ Using cached data (${ALL_TRIPS.length} trips) — sheet unavailable`; statusEl.style.color = 'var(--red)'; }
+  }
+}
+
+
+// ══════════════════════════════════════════
+//  WEATHER STATE
+// ══════════════════════════════════════════
+const WX={historical:{},current:null,forecast:[],loaded:false};
+
+const WMO={0:"☀️",1:"🌤️",2:"⛅",3:"☁️",45:"🌫️",48:"🌫️",51:"🌦️",53:"🌦️",55:"🌧️",61:"🌧️",63:"🌧️",65:"🌧️",80:"🌦️",81:"🌧️",82:"⛈️",95:"⛈️",96:"⛈️",99:"⛈️"};
+const WMO_TXT={0:"Clear sky",1:"Mainly clear",2:"Partly cloudy",3:"Overcast",45:"Foggy",48:"Freezing fog",51:"Light drizzle",53:"Drizzle",55:"Heavy drizzle",61:"Light rain",63:"Rain",65:"Heavy rain",80:"Rain showers",81:"Rain showers",82:"Heavy showers",95:"Thunderstorm",96:"Thunderstorm",99:"Thunderstorm"};
+function wxIcon(c){return WMO[c]||"🌡️";}
+function wxTxt(c){return WMO_TXT[c]||"Unknown";}
+
+async function fetchAllWeather(){
+  if (isSandboxed()) {
+    document.getElementById('wxLoadNote').innerHTML = '📋 Open the GitHub Pages URL to load live weather data.';
+    document.getElementById('wxLoadNote').style.color = 'var(--t3)';
+    return;
+  }
+  const btn=document.querySelector('.refresh-btn');
+  if(btn){btn.textContent='⟳ Fetching...';btn.disabled=true;}
+  try{
+    // Historical Jan-Feb 2026
+    const hRes=await fetch(`https://archive-api.open-meteo.com/v1/archive?latitude=${LAT}&longitude=${LON}&start_date=2026-01-01&end_date=2026-04-14&daily=precipitation_sum,temperature_2m_max,temperature_2m_min&timezone=Asia%2FJakarta`);
+    const hData=await hRes.json();
+    if(hData.daily){
+      hData.daily.time.forEach((d,i)=>{
+        WX.historical[d]={rain:hData.daily.precipitation_sum[i]||0,tmax:hData.daily.temperature_2m_max[i],tmin:hData.daily.temperature_2m_min[i]};
+      });
+    }
+    // Forecast + current
+    const fRes=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&current=temperature_2m,precipitation,weathercode,windspeed_10m,relativehumidity_2m&daily=precipitation_sum,temperature_2m_max,temperature_2m_min,weathercode&timezone=Asia%2FJakarta&forecast_days=5`);
+    const fData=await fRes.json();
+    if(fData.current){
+      WX.current={temp:fData.current.temperature_2m,prcp:fData.current.precipitation,code:fData.current.weathercode,wind:fData.current.windspeed_10m,humid:fData.current.relativehumidity_2m};
+    }
+    if(fData.daily){
+      WX.forecast=fData.daily.time.map((d,i)=>({date:d,tmax:fData.daily.temperature_2m_max[i],tmin:fData.daily.temperature_2m_min[i],rain:fData.daily.precipitation_sum[i]||0,code:fData.daily.weathercode[i]}));
+    }
+    WX.loaded=true;
+    updateWeatherUI();
+    if(document.getElementById('view-production').classList.contains('active')) buildDaily(getFiltered());
+    document.getElementById('wxLoadNote').innerHTML='✅ Weather data loaded from Open-Meteo · Bayung Lencir historical Jan–Feb 2026 + live forecast';
+    document.getElementById('wxLoadNote').style.background='rgba(74,222,128,.08)';
+    document.getElementById('wxLoadNote').style.borderColor='rgba(74,222,128,.2)';
+    document.getElementById('wxLoadNote').style.color='var(--green)';
+  }catch(e){
+    document.getElementById('wxLoadNote').innerHTML='⚠️ Weather fetch failed (network or CORS). Try opening on GitHub Pages where CORS is fully supported. Error: '+e.message;
+    document.getElementById('wxLoadNote').style.color='var(--red)';
+    console.info('Weather fetch skipped (CORS/network):',e.message);
+  }
+  if(btn){btn.textContent='⟳ Weather';btn.disabled=false;}
+}
+
+function updateWeatherUI(){
+  if(WX.current){
+    const c=WX.current;
+    document.getElementById('wxIcon').textContent=wxIcon(c.code);
+    document.getElementById('wxTemp').textContent=c.temp+'°C';
+    document.getElementById('wxCond').textContent=wxTxt(c.code);
+    document.getElementById('wxRain').textContent='Rain: '+c.prcp+'mm · Wind: '+c.wind+'km/h';
+    document.getElementById('wxS-temp').textContent=c.temp+'°C';
+    document.getElementById('wxS-prcp').textContent=c.prcp+' mm';
+    document.getElementById('wxS-cond').textContent=wxIcon(c.code);
+    document.getElementById('wxS-condtxt').textContent=wxTxt(c.code);
+    document.getElementById('wxS-wind').textContent=c.wind+' km/h';
+  }
+  if(WX.forecast.length){
+    const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    document.getElementById('wxForecast').innerHTML=WX.forecast.map(d=>{
+      const dt=new Date(d.date);
+      return`<div class="wx-day">
+        <div class="wx-day-name">${days[dt.getDay()]} ${dt.getDate()}/${dt.getMonth()+1}</div>
+        <div class="wx-day-icon">${wxIcon(d.code)}</div>
+        <div class="wx-day-temp">${Math.round(d.tmax)}°C</div>
+        <div class="wx-day-rain">💧 ${d.rain} mm</div>
+        <div class="wx-day-prob">${wxTxt(d.code)}</div>
+      </div>`;
+    }).join('');
+  }
+  buildWeatherCharts();
+}
+
+function buildWeatherCharts(){
+  const dates=Object.keys(WX.historical).sort();
+  if(!dates.length) return;
+
+  // Build daily production map
+  const prodMap={};
+  ALL_TRIPS.forEach(t=>{if(!prodMap[t.date])prodMap[t.date]={ton:0,trips:0};prodMap[t.date].ton+=t.tonase;prodMap[t.date].trips++;});
+
+  const labels=dates.map(d=>{const x=new Date(d);return(x.getDate()+'/'+(x.getMonth()+1));});
+  const rainfall=dates.map(d=>WX.historical[d].rain);
+  const tonage=dates.map(d=>+(prodMap[d]?.ton||0).toFixed(0));
+
+  // Production+Rain overlay chart
+  mkChart('wxProdChart','bar',{labels,datasets:[
+    {type:'bar',label:'Rainfall (mm)',data:rainfall,backgroundColor:'rgba(96,165,250,.4)',borderColor:'#60a5fa',borderWidth:1,borderRadius:2,yAxisID:'yr',order:2},
+    {type:'line',label:'Tonase (t)',data:tonage,borderColor:'#22d3ee',backgroundColor:'rgba(34,211,238,.1)',borderWidth:2,pointRadius:d=>d.raw>0?3:0,fill:true,tension:.3,yAxisID:'yt',order:1}
+  ]},{...BASE,plugins:{...BASE.plugins,legend:{display:true,labels:{color:'#64748b',font:{family:'Fira Code',size:9},boxWidth:8,padding:10}}},scales:{x:{...BASE.scales.x,ticks:{...BASE.scales.x.ticks,maxTicksLimit:20}},yt:{position:'left',...BASE.scales.y,ticks:{...BASE.scales.y.ticks,callback:v=>v+'t'}},yr:{position:'right',grid:{display:false},ticks:{color:'#60a5fa',font:{family:'Fira Code',size:9},callback:v=>v+'mm'}}}});
+
+  // Rainfall distribution
+  const bins={dry:0,mod:0,heavy:0};
+  rainfall.forEach(r=>{if(r<5)bins.dry++;else if(r<20)bins.mod++;else bins.heavy++;});
+  mkChart('wxDistChart','bar',{labels:['Dry (0–5mm)','Moderate (5–20mm)','Heavy (≥20mm)'],datasets:[{data:[bins.dry,bins.mod,bins.heavy],backgroundColor:['rgba(74,222,128,.5)','rgba(245,158,11,.5)','rgba(96,165,250,.5)'],borderColor:['#4ade80','#f59e0b','#60a5fa'],borderWidth:1,borderRadius:4}]},{...BASE,plugins:{...BASE.plugins,tooltip:{...BASE.plugins.tooltip,callbacks:{label:i=>`${i.raw} days`}}}});
+
+  // Correlation analysis
+  const groups={dry:{trips:[],ton:[]},mod:{trips:[],ton:[]},heavy:{trips:[],ton:[]}};
+  dates.forEach(d=>{
+    const r=WX.historical[d].rain;
+    const p=prodMap[d]||{trips:0,ton:0};
+    const g=r<5?'dry':r<20?'mod':'heavy';
+    groups[g].trips.push(p.trips);
+    groups[g].ton.push(p.ton);
+  });
+  const avg=arr=>arr.length?+(arr.reduce((a,b)=>a+b,0)/arr.length).toFixed(1):0;
+  const corrInfo=[
+    {id:'dry',label:'☀️ Dry Day (0–5mm)',col:'var(--green)',days:bins.dry,avgTrip:avg(groups.dry.trips),avgTon:avg(groups.dry.ton)},
+    {id:'mod',label:'🌦 Moderate Rain (5–20mm)',col:'var(--amber)',days:bins.mod,avgTrip:avg(groups.mod.trips),avgTon:avg(groups.mod.ton)},
+    {id:'heavy',label:'🌧 Heavy Rain (≥20mm)',col:'var(--blue)',days:bins.heavy,avgTrip:avg(groups.heavy.trips),avgTon:avg(groups.heavy.ton)},
+  ];
+  document.getElementById('corrCards').innerHTML=corrInfo.map(c=>`
+    <div class="corr-card">
+      <div class="corr-type" style="color:${c.col}">${c.label}</div>
+      <div class="corr-val" style="color:${c.col}">${c.avgTrip} trips/day</div>
+      <div class="corr-sub">${c.avgTon} avg ton · ${c.days} days observed</div>
+    </div>`).join('');
+}
+
+// ══════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════
+let activeMo='all',activeSec='production';
+let fD='ALL',fU='ALL',pg_=1,srch_='',srt_='date',srtD=1;
+const PS=15;
+let charts={};
+
+const BASE={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#1a2130',borderColor:'#253040',borderWidth:1,titleColor:'#94a3b8',bodyColor:'#e8edf5',titleFont:{family:'Fira Code',size:10},bodyFont:{family:'Fira Code',size:11}}},scales:{x:{grid:{color:'#253040'},ticks:{color:'#64748b',font:{family:'Fira Code',size:9}}},y:{grid:{color:'#253040'},ticks:{color:'#64748b',font:{family:'Fira Code',size:9}}}}};
+function mkChart(id,type,data,opts){if(charts[id])charts[id].destroy();charts[id]=new Chart(document.getElementById(id).getContext('2d'),{type,data,options:{...BASE,...opts}});}
+
+function setMonth(m){activeMo=m;document.querySelectorAll('.m-tab:not(.pending)').forEach(t=>t.classList.toggle('active',t.dataset.m===m));pg_=1;renderAll();}
+function setSec(s){
+  activeSec=s;
+  document.querySelectorAll('.sec-tab').forEach(t=>t.classList.toggle('active',t.dataset.s===s));
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+s).classList.add('active');
+  document.getElementById('filterBar').style.display=s==='production'?'flex':'none';
+  if(s==='compare')buildCompare();
+  if(s==='fuel')buildFuel();
+  if(s==='weather'){updateWeatherUI();if(!WX.loaded)fetchAllWeather();}
+}
+function getFiltered(){
+  return ALL_TRIPS.filter(t=>{
+    const mo=activeMo==='all'||(activeMo==='jan'&&t.month==='Jan')||(activeMo==='feb'&&t.month==='Feb')||(activeMo==='apr'&&t.month==='Apr');
+    return mo&&(fD==='ALL'||t.driver===fD)&&(fU==='ALL'||t.unit===fU)&&(!srch_||t.driver.toLowerCase().includes(srch_)||t.unit.toLowerCase().includes(srch_)||t.do_num.includes(srch_));
+  });
+}
+
+function buildChips(){
+  const ds=[...new Set(ALL_TRIPS.map(t=>t.driver))].sort();
+  const us=[...new Set(ALL_TRIPS.map(t=>t.unit))].sort();
+  document.getElementById('dChips').innerHTML=`<div class="chip active" data-d="ALL" onclick="setChip('d','ALL')">All</div>`+ds.map(d=>`<div class="chip" data-d="${d}" onclick="setChip('d','${d}')">${d}</div>`).join('');
+  document.getElementById('uChips').innerHTML=`<div class="chip active" data-u="ALL" onclick="setChip('u','ALL')">All</div>`+us.map(u=>`<div class="chip" data-u="${u}" onclick="setChip('u','${u}')">${u}</div>`).join('');
+}
+function setChip(t,v){if(t==='d'){fD=v;document.querySelectorAll('[data-d]').forEach(c=>c.classList.toggle('active',c.dataset.d===v));}else{fU=v;document.querySelectorAll('[data-u]').forEach(c=>c.classList.toggle('active',c.dataset.u===v));}pg_=1;renderAll();}
+
+function agg(data){const n=data.length,ton=data.reduce((s,t)=>s+t.tonase,0),rev=data.reduce((s,t)=>s+t.revenue,0);return{n,ton,rev,avg:n?ton/n:0,drivers:new Set(data.map(t=>t.driver)).size};}
+function fN(n){return n.toLocaleString('id-ID');}
+function fRp(n){if(n>=1e9)return'Rp '+(n/1e9).toFixed(2)+'M';if(n>=1e6)return'Rp '+(n/1e6).toFixed(1)+'Jt';return'Rp '+fN(n);}
+
+function buildKPIs(data){
+  const ja=agg(JAN.filter(t=>(fD==='ALL'||t.driver===fD)&&(fU==='ALL'||t.unit===fU)));
+  const fa=agg(FEB.filter(t=>(fD==='ALL'||t.driver===fD)&&(fU==='ALL'||t.unit===fU)));
+  const aa=agg(APR.filter(t=>(fD==='ALL'||t.driver===fD)&&(fU==='ALL'||t.unit===fU)));
+  const cur=agg(data);
+  const prevMap={jan:null,feb:ja,apr:fa};
+  const prevM=prevMap[activeMo]||null;
+  const tr=(a,b,f)=>{if(!a||activeMo==='all'||!a[f]||!b[f])return'';const p=((b[f]-a[f])/a[f]*100);return`<div class="kpi-trend ${p>0?'up':'dn'}">${p>0?'↑':'↓'}${Math.abs(p).toFixed(1)}%</div>`;};
+  const ks=[
+    {cl:'a',lb:'Total Ritase',val:fN(cur.n),sub:'trips completed',tr:tr(prevM,cur,'n')},
+    {cl:'c',lb:'Total Tonase',val:fN(Math.round(cur.ton*10)/10),sub:'metric tons',tr:tr(prevM,cur,'ton')},
+    {cl:'a',lb:'Revenue',val:fRp(cur.rev),sub:fN(cur.rev)+' IDR',tr:tr(prevM,cur,'rev')},
+    {cl:'g',lb:'Avg Ton/Trip',val:cur.avg.toFixed(2),sub:'tons per ritase',tr:tr(prevM,cur,'avg')},
+    {cl:'p',lb:'Active Drivers',val:cur.drivers,sub:'operators',tr:''},
+    {cl:'c',lb:'Rate Rp/Km/Ton',val:activeMo==='jan'?'1,400':activeMo==='feb'?'1,550':activeMo==='apr'?'1,550':'1,400–1,550',sub:activeMo==='feb'||activeMo==='apr'?'Rate stabil Feb–Apr':'H2 route · 68 km',tr:''},
+    {cl:'b',lb:'Wx Today',val:(WX.current?WX.current.temp+'°C':'—°C'),sub:(WX.current?wxIcon(WX.current.code)+' '+wxTxt(WX.current.code):'Click ⟳ Weather'),tr:''},
+  ];
+  document.getElementById('kpiRow').innerHTML=ks.map(k=>`<div class="kpi ${k.cl}">${k.tr}<div class="kpi-lbl">${k.lb}</div><div class="kpi-val">${k.val}</div><div class="kpi-sub">${k.sub}</div></div>`).join('');
+}
+
+function buildDaily(data){
+  const dm={};
+  data.forEach(t=>{if(!dm[t.date])dm[t.date]={ton:0,trips:0};dm[t.date].ton+=t.tonase;dm[t.date].trips++;});
+  const dates=Object.keys(dm).sort();
+  const labels=dates.map(d=>{const x=new Date(d);return x.getDate()+'/'+(x.getMonth()+1);});
+  const tons=dates.map(d=>+(dm[d].ton.toFixed(1)));
+  const trips=dates.map(d=>dm[d].trips);
+  const rainVals=dates.map(d=>WX.historical[d]?.rain||0);
+  const hasRain=rainVals.some(r=>r>0);
+
+  if(hasRain) document.getElementById('wxOverlayNote').textContent='Weather overlay loaded · Blue bars = rainfall (mm right axis)';
+  else document.getElementById('wxOverlayNote').textContent='Click ⟳ Weather to load rainfall overlay';
+
+  const datasets=[
+    {type:'line',label:'Ritase',data:trips,borderColor:'#f59e0b',backgroundColor:'rgba(245,158,11,.1)',borderWidth:2,pointBackgroundColor:'#f59e0b',pointRadius:3,fill:false,tension:.3,yAxisID:'yr'},
+    {type:'bar',label:'Tonase (t)',data:tons,backgroundColor:'rgba(34,211,238,.3)',borderColor:'rgba(34,211,238,.7)',borderWidth:1,borderRadius:3,yAxisID:'yt'},
+  ];
+  if(hasRain) datasets.push({type:'bar',label:'Rain (mm)',data:rainVals,backgroundColor:'rgba(96,165,250,.25)',borderColor:'rgba(96,165,250,.5)',borderWidth:1,borderRadius:2,yAxisID:'rain'});
+
+  mkChart('dailyChart','bar',{labels,datasets},{...BASE,plugins:{...BASE.plugins,legend:{display:true,labels:{color:'#64748b',font:{family:'Fira Code',size:9},boxWidth:8,padding:10}}},scales:{x:BASE.scales.x,yt:{position:'left',...BASE.scales.y,ticks:{...BASE.scales.y.ticks,callback:v=>v+'t'}},yr:{position:'right',grid:{display:false},ticks:{color:'#f59e0b',font:{family:'Fira Code',size:9},callback:v=>v+'x'},min:0},rain:{display:hasRain,position:'right',grid:{display:false},ticks:{color:'#60a5fa',font:{family:'Fira Code',size:9},callback:v=>v+'mm'},min:0}}});
+}
+
+function buildDonut(data){
+  const dm={};data.forEach(t=>{dm[t.driver]=(dm[t.driver]||0)+t.tonase;});
+  const ls=Object.keys(dm),vs=ls.map(d=>+dm[d].toFixed(1)),cs=ls.map(d=>DC[d]||'#666');
+  mkChart('donutChart','doughnut',{labels:ls,datasets:[{data:vs,backgroundColor:cs.map(c=>c+'bb'),borderColor:cs,borderWidth:2,hoverOffset:8}]},{responsive:true,maintainAspectRatio:false,cutout:'62%',plugins:{legend:{display:true,position:'right',labels:{color:'#94a3b8',font:{family:'Fira Code',size:9},boxWidth:8,padding:8,generateLabels:ch=>ch.data.labels.map((l,i)=>({text:l+' · '+vs[i].toFixed(0)+'t',fillStyle:cs[i],strokeStyle:cs[i],hidden:false,index:i}))}},tooltip:{...BASE.plugins.tooltip,callbacks:{label:i=>`${i.label}: ${i.raw}t (${(i.raw/vs.reduce((a,b)=>a+b,0)*100).toFixed(1)}%)`}}}});
+}
+
+function buildDriverBar(id,field,fmt){
+  const dm={};
+  ALL_TRIPS.filter(t=>(activeMo==='all')||(activeMo==='jan'&&t.month==='Jan')||(activeMo==='feb'&&t.month==='Feb')||(activeMo==='apr'&&t.month==='Apr'))
+    .filter(t=>fU==='ALL'||t.unit===fU)
+    .forEach(t=>{if(!dm[t.driver])dm[t.driver]=0;dm[t.driver]+=t[field];});
+  const sorted=Object.entries(dm).sort((a,b)=>b[1]-a[1]);
+  const ls=sorted.map(d=>d[0]),vs=sorted.map(d=>fmt?+(d[1]/1e6).toFixed(1):+(d[1].toFixed(1)));
+  mkChart(id,'bar',{labels:ls,datasets:[{data:vs,backgroundColor:ls.map(d=>(DC[d]||'#666')+'99'),borderColor:ls.map(d=>DC[d]||'#666'),borderWidth:1,borderRadius:3,borderSkipped:false}]},{...BASE,indexAxis:'y',scales:{x:{...BASE.scales.x,ticks:{...BASE.scales.x.ticks,callback:v=>fmt?'Rp'+v+'Jt':v}},y:BASE.scales.y}});
+}
+
+function buildDriverCards(data){
+  const dm={};data.forEach(t=>{if(!dm[t.driver])dm[t.driver]={n:0,ton:0,rev:0,units:new Set()};dm[t.driver].n++;dm[t.driver].ton+=t.tonase;dm[t.driver].rev+=t.revenue;dm[t.driver].units.add(t.unit);});
+  const sorted=Object.entries(dm).sort((a,b)=>b[1].ton-a[1].ton);
+  const maxT=Math.max(...sorted.map(d=>d[1].ton));
+  const inJ=new Set(JAN.map(t=>t.driver)),inF=new Set(FEB.map(t=>t.driver)),inA=new Set(APR.map(t=>t.driver));
+  document.getElementById('dCards').innerHTML=sorted.map(([name,d])=>{
+    const isNew=(!inJ.has(name)&&inF.has(name))||(!inJ.has(name)&&!inF.has(name)&&inA.has(name));
+    return`<div class="dc" onclick="setChip('d','${name}')">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div><div class="dn2" style="color:${DC[name]||'#fff'}">${name}</div><div class="du">${[...d.units].join(', ')}</div></div>
+        <div style="width:7px;height:7px;border-radius:50%;background:${DC[name]||'#666'};margin-top:3px"></div>
+      </div>
+      ${isNew?'<span class="dbadge new">NEW FEB</span>':'<span class="dbadge act">ACTIVE</span>'}
+      <div class="dbv" style="color:${DC[name]||'#fff'}">${d.ton.toFixed(0)}t</div>
+      <div class="dbl">${d.n} trips · ${fRp(d.rev)}</div>
+      <div class="dbg"><div class="dbf" style="width:${(d.ton/maxT*100).toFixed(0)}%;background:${DC[name]||'#666'}"></div></div>
+    </div>`;
+  }).join('');
+}
+
+function buildTable(data){
+  const sorted=[...data].sort((a,b)=>{const va=a[srt_],vb=b[srt_];return srtD*(typeof va==='string'?va.localeCompare(vb):va-vb);});
+  const tot=sorted.length,start=(pg_-1)*PS,page=sorted.slice(start,start+PS);
+  document.getElementById('rowCount').textContent=tot;
+  document.getElementById('pgInfo').textContent=`${start+1}–${Math.min(start+PS,tot)} of ${tot}`;
+  document.getElementById('bPrev').disabled=pg_===1;
+  document.getElementById('bNext').disabled=start+PS>=tot;
+  document.getElementById('tblBody').innerHTML=page.map(t=>{
+    const d=new Date(t.date),rain=WX.historical[t.date]?.rain||0,rainy=rain>=5;
+    return`<tr class="${rainy?'rainy':''}">
+      <td style="color:var(--t3)">${t.no}</td>
+      <td><span style="background:${t.month==='Jan'?'var(--amberd)':t.month==='Feb'?'var(--cyand)':'var(--purpled)'};color:${t.month==='Jan'?'var(--amber)':t.month==='Feb'?'var(--cyan)':'var(--purple)'};padding:1px 5px;border-radius:3px;font-size:8px">${t.month}</span></td>
+      <td>${d.getDate()}/${d.getMonth()+1}/26</td>
+      <td style="color:${DC[t.driver]||'#fff'};font-weight:500">${t.driver}</td>
+      <td><span class="tdu">${t.unit}</span></td>
+      <td style="color:var(--t3)">${t.do_num}</td>
+      <td class="td-ton">${t.tonase.toFixed(2)}</td>
+      <td style="color:var(--t3)">${fN(t.rp_per_km_ton)}</td>
+      <td class="td-rev">${fRp(t.revenue)}</td>
+      <td style="color:${rainy?'var(--blue)':'var(--t4)'}">${rain>0?'💧'+rain.toFixed(0)+'mm':'—'}</td>
+    </tr>`;
+  }).join('');
+}
+window.pg=dir=>{pg_+=dir;buildTable(getFiltered());};
+window.srt=col=>{if(srt_===col)srtD*=-1;else{srt_=col;srtD=1;}buildTable(getFiltered());};
+window.onSrch=()=>{srch_=document.getElementById('tblSrch').value.toLowerCase();pg_=1;buildTable(getFiltered());};
+
+function buildCompare(){
+  const ja=agg(JAN),fa=agg(FEB),aa=agg(APR);
+  const pct=(a,b)=>a?((b-a)/a*100).toFixed(1):'—';
+  const items=[
+    {lb:'Ritase',jv:ja.n,fv:fa.n,av:aa.n,fmt:v=>fN(v)+' trips'},
+    {lb:'Tonase',jv:+ja.ton.toFixed(0),fv:+fa.ton.toFixed(0),av:+aa.ton.toFixed(0),fmt:v=>fN(v)+'t'},
+    {lb:'Revenue',jv:fRp(ja.rev),fv:fRp(fa.rev),av:fRp(aa.rev),fmt:v=>v},
+    {lb:'Rate/Km/Ton',jv:'1,400',fv:'1,550',av:'1,550',fmt:v=>'Rp '+v},
+    {lb:'Avg Ton/Trip',jv:+ja.avg.toFixed(2),fv:+fa.avg.toFixed(2),av:+aa.avg.toFixed(2),fmt:v=>v+'t'},
+  ];
+  document.getElementById('cmpBanner').innerHTML=items.map(item=>{
+    const febPct=pct(typeof item.jv==='number'?item.jv:null,typeof item.fv==='number'?item.fv:null);
+    const aprPct=pct(typeof item.fv==='number'?item.fv:null,typeof item.av==='number'?item.av:null);
+    return`<div class="cmp-item">
+      <div class="cmp-pill"><div class="cv">${typeof item.jv==='number'?fN(item.jv):item.jv}</div><div class="cl">JAN</div></div>
+      <div><div style="text-align:center;font-size:14px;color:var(--t3)">→</div>
+        <div class="cmp-chg"><div class="cc" style="color:${parseFloat(febPct)>0?'var(--green)':'var(--red)'}">${febPct>0?'+':''}${febPct}%</div><div class="ck">Jan→Feb</div></div>
+      </div>
+      <div class="cmp-pill"><div class="cv">${typeof item.fv==='number'?fN(item.fv):item.fv}</div><div class="cl">FEB</div></div>
+      <div><div style="text-align:center;font-size:14px;color:var(--t3)">→</div>
+        <div class="cmp-chg"><div class="cc" style="color:${parseFloat(aprPct)>0?'var(--green)':'var(--red)'}">${aprPct>0?'+':''}${aprPct}%</div><div class="ck">Feb→Apr</div></div>
+      </div>
+      <div class="cmp-pill"><div class="cv">${typeof item.av==='number'?fN(item.av):item.av}</div><div class="cl">APR</div></div>
+    </div><div class="cdiv"></div>`;
+  }).join('');
+  const months=['Jan','Feb','Apr'];
+  const colors=['rgba(245,158,11,.7)','rgba(34,211,238,.7)','rgba(167,139,250,.7)'];
+  const borders=['#f59e0b','#22d3ee','#a78bfa'];
+  const mk=(id,vals,cb)=>{if(charts[id])charts[id].destroy();charts[id]=new Chart(document.getElementById(id).getContext('2d'),{type:'bar',data:{labels:months,datasets:[{data:vals,backgroundColor:colors,borderColor:borders,borderWidth:1,borderRadius:4}]},options:{...BASE,plugins:{...BASE.plugins,tooltip:{...BASE.plugins.tooltip,callbacks:{label:i=>cb(i.raw)}}}}});}
+  mk('cTrip',[ja.n,fa.n,aa.n],v=>v+' trips');
+  mk('cTon',[+ja.ton.toFixed(0),+fa.ton.toFixed(0),+aa.ton.toFixed(0)],v=>fN(v)+'t');
+  mk('cRev',[+(ja.rev/1e6).toFixed(1),+(fa.rev/1e6).toFixed(1),+(aa.rev/1e6).toFixed(1)],v=>'Rp '+v+'Jt');
+  mk('cAvg',[+ja.avg.toFixed(2),+fa.avg.toFixed(2),+aa.avg.toFixed(2)],v=>v+'t');
+}
+
+function buildFuel(){
+  if(charts.fuelChart)charts.fuelChart.destroy();
+  charts.fuelChart=new Chart(document.getElementById('fuelChart').getContext('2d'),{type:'bar',data:{labels:['Feb 2026','Mar 2026\n(partial)','Apr 2026'],datasets:[{label:'Volume (L)',data:[9720,11880,5520],backgroundColor:'rgba(34,211,238,.4)',borderColor:'#22d3ee',borderWidth:1,borderRadius:3,yAxisID:'y'},{label:'Biaya (Rp)',data:[106920000,130680000,60720000],backgroundColor:'rgba(251,146,60,.3)',borderColor:'#fb923c',borderWidth:1,borderRadius:3,yAxisID:'y2'}]},options:{...BASE,plugins:{...BASE.plugins,legend:{display:true,labels:{color:'#64748b',font:{family:'Fira Code',size:9},boxWidth:8}}},scales:{x:BASE.scales.x,y:{...BASE.scales.y,position:'left',ticks:{...BASE.scales.y.ticks,callback:v=>fN(v)+'L'}},y2:{position:'right',grid:{display:false},ticks:{color:'#64748b',font:{family:'Fira Code',size:9},callback:v=>'Rp'+(v/1e6).toFixed(0)+'Jt'}}}}});
+}
+
+function renderAll(){const data=getFiltered();buildKPIs(data);buildDaily(data);buildDonut(data);buildDriverBar('dTripChart','no',false);buildDriverBar('dTonChart','tonase',false);buildDriverBar('dRevChart','revenue',true);buildDriverCards(data);buildTable(data);}
+
+Chart.defaults.font.family='Fira Code';
+buildChips();
+renderAll();
+// Auto-fetch live sheet data + weather on load
+setTimeout(fetchLiveData, 300);
+setTimeout(()=>{ if(!isSandboxed()) fetchAllWeather(); }, 1500);
+</script>
+</body>
+</html>
