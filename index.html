@@ -210,11 +210,13 @@ tbody td{padding:7px 12px;font-size:10px;font-family:'Fira Code',monospace;color
 </div>
 
 <div class="month-nav">
-  <div class="m-tab active" data-m="all" onclick="setMonth('all')">All <span class="mb" id="mb-all">199</span></div>
+  <div class="m-tab active" data-m="all" onclick="setMonth('all')">All <span class="mb" id="mb-all">303+</span></div>
   <div class="m-tab" data-m="jan" onclick="setMonth('jan')">Jan 2026 <span class="mb">57</span></div>
   <div class="m-tab" data-m="feb" onclick="setMonth('feb')">Feb 2026 <span class="mb">82</span></div>
 
+  <div class="m-tab" data-m="mar" onclick="setMonth('mar')">Mar 2026 <span class="mb">98</span></div>
   <div class="m-tab" data-m="apr" onclick="setMonth('apr')">Apr 2026 <span class="mb">60</span></div>
+  <div class="m-tab" data-m="may" onclick="setMonth('may')">May 2026 <span class="mb" id="mb-may">6+</span></div>
 </div>
 
 <div class="sec-nav">
@@ -596,7 +598,115 @@ const APR=[
   {no:59,month:"Apr",date:"2026-04-20",driver:"Irfan",unit:"QBP 03",do_num:"882015",tonase:30.54,rp_per_km_ton:1550,revenue:3218916},
   {no:60,month:"Apr",date:"2026-04-21",driver:"Kasmadi",unit:"QBP 01",do_num:"882772",tonase:31.12,rp_per_km_ton:1550,revenue:3280048},
 ];
-const ALL_TRIPS=[...JAN,...FEB,...APR];
+const MAR=[
+  {no:1,month:"Mar",date:"2026-03-01",driver:"Jhonson",unit:"QBP 05",do_num:"818150",tonase:29.89,rp_per_km_ton:1550,revenue:3150406},
+  {no:2,month:"Mar",date:"2026-03-01",driver:"Awang",unit:"QBP 02",do_num:"817215",tonase:31.43,rp_per_km_ton:1550,revenue:3312722},
+  {no:3,month:"Mar",date:"2026-03-01",driver:"Rahmat",unit:"QBP 01",do_num:"818338",tonase:28.13,rp_per_km_ton:1550,revenue:2964902},
+  {no:4,month:"Mar",date:"2026-03-02",driver:"Darminto",unit:"QBP 03",do_num:"818965",tonase:33.57,rp_per_km_ton:1550,revenue:3538278},
+  {no:5,month:"Mar",date:"2026-03-02",driver:"Awang",unit:"QBP 02",do_num:"819454",tonase:30.60,rp_per_km_ton:1550,revenue:3225240},
+  {no:6,month:"Mar",date:"2026-03-02",driver:"Rahmat",unit:"QBP 01",do_num:"819459",tonase:31.47,rp_per_km_ton:1550,revenue:3316938},
+  {no:7,month:"Mar",date:"2026-03-02",driver:"Jhonson",unit:"QBP 05",do_num:"819588",tonase:31.90,rp_per_km_ton:1550,revenue:3362260},
+  {no:8,month:"Mar",date:"2026-03-03",driver:"Darminto",unit:"QBP 03",do_num:"820230",tonase:32.08,rp_per_km_ton:1550,revenue:3381232},
+  {no:9,month:"Mar",date:"2026-03-03",driver:"Awang",unit:"QBP 05",do_num:"820408",tonase:31.21,rp_per_km_ton:1550,revenue:3289534},
+  {no:10,month:"Mar",date:"2026-03-03",driver:"Jhonson",unit:"QBP 05",do_num:"820882",tonase:31.35,rp_per_km_ton:1550,revenue:3304290},
+  {no:11,month:"Mar",date:"2026-03-03",driver:"Rahmat",unit:"QBP 01",do_num:"821047",tonase:29.55,rp_per_km_ton:1550,revenue:3114570},
+  {no:12,month:"Mar",date:"2026-03-04",driver:"Darminto",unit:"QBP 03",do_num:"821638",tonase:31.21,rp_per_km_ton:1550,revenue:3289534},
+  {no:13,month:"Mar",date:"2026-03-04",driver:"Awang",unit:"QBP 02",do_num:"822028",tonase:29.34,rp_per_km_ton:1550,revenue:3092436},
+  {no:14,month:"Mar",date:"2026-03-04",driver:"Jhonson",unit:"QBP 05",do_num:"822725",tonase:31.41,rp_per_km_ton:1550,revenue:3310614},
+  {no:15,month:"Mar",date:"2026-03-04",driver:"Rahmat",unit:"QBP 01",do_num:"822824",tonase:30.41,rp_per_km_ton:1550,revenue:3205214},
+  {no:16,month:"Mar",date:"2026-03-04",driver:"Awang",unit:"QBP 02",do_num:"823112",tonase:29.91,rp_per_km_ton:1550,revenue:3152514},
+  {no:17,month:"Mar",date:"2026-03-05",driver:"Darminto",unit:"QBP 03",do_num:"823471",tonase:31.82,rp_per_km_ton:1550,revenue:3353828},
+  {no:18,month:"Mar",date:"2026-03-05",driver:"Jhonson",unit:"QBP 05",do_num:"823980",tonase:29.84,rp_per_km_ton:1550,revenue:3145136},
+  {no:19,month:"Mar",date:"2026-03-05",driver:"Rahmat",unit:"QBP 01",do_num:"824055",tonase:30.02,rp_per_km_ton:1550,revenue:3164108},
+  {no:20,month:"Mar",date:"2026-03-06",driver:"Darminto",unit:"QBP 03",do_num:"824540",tonase:32.03,rp_per_km_ton:1550,revenue:3375962},
+  {no:21,month:"Mar",date:"2026-03-08",driver:"Awang",unit:"QBP 02",do_num:"825786",tonase:32.92,rp_per_km_ton:1550,revenue:3469768},
+  {no:22,month:"Mar",date:"2026-03-08",driver:"Darminto",unit:"QBP 03",do_num:"825814",tonase:34.38,rp_per_km_ton:1550,revenue:3623652},
+  {no:23,month:"Mar",date:"2026-03-07",driver:"Rahmat",unit:"QBP 01",do_num:"825680",tonase:31.31,rp_per_km_ton:1550,revenue:3300074},
+  {no:24,month:"Mar",date:"2026-03-07",driver:"Jhonson",unit:"QBP 05",do_num:"825325",tonase:32.62,rp_per_km_ton:1550,revenue:3438148},
+  {no:25,month:"Mar",date:"2026-03-09",driver:"Jhonson",unit:"QBP 05",do_num:"826883",tonase:29.58,rp_per_km_ton:1550,revenue:3117732},
+  {no:26,month:"Mar",date:"2026-03-09",driver:"Awang",unit:"QBP 02",do_num:"827541",tonase:34.08,rp_per_km_ton:1550,revenue:3592032},
+  {no:27,month:"Mar",date:"2026-03-09",driver:"Rahmat",unit:"QBP 01",do_num:"827967",tonase:31.68,rp_per_km_ton:1550,revenue:3339072},
+  {no:28,month:"Mar",date:"2026-03-09",driver:"Jhonson",unit:"QBP 05",do_num:"828151",tonase:32.46,rp_per_km_ton:1550,revenue:3421284},
+  {no:29,month:"Mar",date:"2026-03-10",driver:"Darminto",unit:"QBP 03",do_num:"828315",tonase:33.92,rp_per_km_ton:1550,revenue:3575168},
+  {no:30,month:"Mar",date:"2026-03-10",driver:"Awang",unit:"QBP 02",do_num:"829430",tonase:32.00,rp_per_km_ton:1550,revenue:3372800},
+  {no:31,month:"Mar",date:"2026-03-10",driver:"Jhonson",unit:"QBP 05",do_num:"829433",tonase:32.29,rp_per_km_ton:1550,revenue:3403366},
+  {no:32,month:"Mar",date:"2026-03-11",driver:"Darminto",unit:"QBP 03",do_num:"829829",tonase:33.17,rp_per_km_ton:1550,revenue:3496118},
+  {no:33,month:"Mar",date:"2026-03-11",driver:"Rahmat",unit:"QBP 01",do_num:"829786",tonase:31.54,rp_per_km_ton:1550,revenue:3324316},
+  {no:34,month:"Mar",date:"2026-03-11",driver:"Awang",unit:"QBP 02",do_num:"830990",tonase:31.32,rp_per_km_ton:1550,revenue:3301128},
+  {no:35,month:"Mar",date:"2026-03-12",driver:"Jhonson",unit:"QBP 05",do_num:"831473",tonase:32.39,rp_per_km_ton:1550,revenue:3413906},
+  {no:36,month:"Mar",date:"2026-03-12",driver:"Darminto",unit:"QBP 03",do_num:"831638",tonase:30.86,rp_per_km_ton:1550,revenue:3252644},
+  {no:37,month:"Mar",date:"2026-03-12",driver:"Rahmat",unit:"QBP 01",do_num:"832227",tonase:29.93,rp_per_km_ton:1550,revenue:3154622},
+  {no:38,month:"Mar",date:"2026-03-12",driver:"Jhonson",unit:"QBP 05",do_num:"832480",tonase:30.13,rp_per_km_ton:1550,revenue:3175702},
+  {no:39,month:"Mar",date:"2026-03-13",driver:"Darminto",unit:"QBP 03",do_num:"833081",tonase:32.42,rp_per_km_ton:1550,revenue:3417068},
+  {no:40,month:"Mar",date:"2026-03-13",driver:"Awang",unit:"QBP 02",do_num:"833408",tonase:30.89,rp_per_km_ton:1550,revenue:3255806},
+  {no:41,month:"Mar",date:"2026-03-13",driver:"Rahmat",unit:"QBP 01",do_num:"833739",tonase:30.69,rp_per_km_ton:1550,revenue:3234726},
+  {no:42,month:"Mar",date:"2026-03-14",driver:"Jhonson",unit:"QBP 05",do_num:"834324",tonase:30.07,rp_per_km_ton:1550,revenue:3169378},
+  {no:43,month:"Mar",date:"2026-03-14",driver:"Darminto",unit:"QBP 03",do_num:"834442",tonase:32.66,rp_per_km_ton:1550,revenue:3442364},
+  {no:44,month:"Mar",date:"2026-03-14",driver:"Julaikat",unit:"QBP 04",do_num:"834179",tonase:32.18,rp_per_km_ton:1550,revenue:3391772},
+  {no:45,month:"Mar",date:"2026-03-14",driver:"Julaikat",unit:"QBP 04",do_num:"834969",tonase:31.91,rp_per_km_ton:1550,revenue:3363314},
+  {no:46,month:"Mar",date:"2026-03-15",driver:"Jhonson",unit:"QBP 05",do_num:"835307",tonase:30.90,rp_per_km_ton:1550,revenue:3256860},
+  {no:47,month:"Mar",date:"2026-03-15",driver:"Julaikat",unit:"QBP 04",do_num:"835425",tonase:32.33,rp_per_km_ton:1550,revenue:3407582},
+  {no:48,month:"Mar",date:"2026-03-15",driver:"Darminto",unit:"QBP 03",do_num:"835608",tonase:31.97,rp_per_km_ton:1550,revenue:3369638},
+  {no:49,month:"Mar",date:"2026-03-15",driver:"Awang",unit:"QBP 02",do_num:"836299",tonase:29.51,rp_per_km_ton:1550,revenue:3110354},
+  {no:50,month:"Mar",date:"2026-03-15",driver:"Darminto",unit:"QBP 03",do_num:"836513",tonase:32.64,rp_per_km_ton:1550,revenue:3440256},
+  {no:51,month:"Mar",date:"2026-03-16",driver:"Rahmat",unit:"QBP 01",do_num:"836699",tonase:31.02,rp_per_km_ton:1550,revenue:3269508},
+  {no:52,month:"Mar",date:"2026-03-01",driver:"Darminto",unit:"QBP 05",do_num:"837826",tonase:30.03,rp_per_km_ton:1550,revenue:3165162},
+  {no:53,month:"Mar",date:"2026-03-17",driver:"Jhonson",unit:"QBP 03",do_num:"837738",tonase:31.79,rp_per_km_ton:1550,revenue:3350666},
+  {no:54,month:"Mar",date:"2026-03-17",driver:"Darminto",unit:"QBP 04",do_num:"837653",tonase:31.87,rp_per_km_ton:1550,revenue:3359098},
+  {no:55,month:"Mar",date:"2026-03-17",driver:"Julaikat",unit:"QBP 02",do_num:"838439",tonase:30.48,rp_per_km_ton:1550,revenue:3212592},
+  {no:56,month:"Mar",date:"2026-03-16",driver:"Julaikat",unit:"QBP 04",do_num:"838729",tonase:30.11,rp_per_km_ton:1550,revenue:3173594},
+  {no:57,month:"Mar",date:"2026-03-16",driver:"Jhonson",unit:"QBP 03",do_num:"839049",tonase:30.53,rp_per_km_ton:1550,revenue:3217862},
+  {no:58,month:"Mar",date:"2026-03-17",driver:"Awang",unit:"QBP 02",do_num:"839651",tonase:30.79,rp_per_km_ton:1550,revenue:3245266},
+  {no:59,month:"Mar",date:"2026-03-17",driver:"Julaikat",unit:"QBP 05",do_num:"839614",tonase:31.15,rp_per_km_ton:1550,revenue:3283210},
+  {no:60,month:"Mar",date:"2026-03-18",driver:"Darminto",unit:"QBP 01",do_num:"839682",tonase:32.49,rp_per_km_ton:1550,revenue:3424446},
+  {no:61,month:"Mar",date:"2026-03-18",driver:"Awang",unit:"QBP 03",do_num:"839628",tonase:29.37,rp_per_km_ton:1550,revenue:3095598},
+  {no:62,month:"Mar",date:"2026-03-18",driver:"Jhonson",unit:"QBP 03",do_num:"840580",tonase:29.28,rp_per_km_ton:1550,revenue:3086112},
+  {no:63,month:"Mar",date:"2026-03-18",driver:"Rahmat",unit:"QBP 05",do_num:"840621",tonase:31.45,rp_per_km_ton:1550,revenue:3314830},
+  {no:64,month:"Mar",date:"2026-03-18",driver:"Darminto",unit:"QBP 02",do_num:"840824",tonase:32.06,rp_per_km_ton:1550,revenue:3379124},
+  {no:65,month:"Mar",date:"2026-03-19",driver:"Darminto",unit:"QBP 05",do_num:"841718b",tonase:30.99,rp_per_km_ton:1550,revenue:3266346},
+  {no:66,month:"Mar",date:"2026-03-19",driver:"Jhonson",unit:"QBP 03",do_num:"841538",tonase:30.91,rp_per_km_ton:1550,revenue:3257914},
+  {no:67,month:"Mar",date:"2026-03-19",driver:"Awang",unit:"QBP 03",do_num:"841540",tonase:30.58,rp_per_km_ton:1550,revenue:3223132},
+  {no:68,month:"Mar",date:"2026-03-20",driver:"Darminto",unit:"QBP 05",do_num:"841718",tonase:30.11,rp_per_km_ton:1550,revenue:3173594},
+  {no:69,month:"Mar",date:"2026-03-21",driver:"Jhonson",unit:"QBP 05",do_num:"842177",tonase:29.83,rp_per_km_ton:1550,revenue:3144082},
+  {no:70,month:"Mar",date:"2026-03-22",driver:"Jhonson",unit:"QBP 03",do_num:"842328",tonase:30.38,rp_per_km_ton:1550,revenue:3202052},
+  {no:71,month:"Mar",date:"2026-03-22",driver:"Darminto",unit:"QBP 05",do_num:"842611",tonase:31.19,rp_per_km_ton:1550,revenue:3287426},
+  {no:72,month:"Mar",date:"2026-03-22",driver:"Jhonson",unit:"QBP 01",do_num:"842514",tonase:30.41,rp_per_km_ton:1550,revenue:3205214},
+  {no:73,month:"Mar",date:"2026-03-22",driver:"Kasmadi",unit:"QBP 02",do_num:"843283",tonase:31.91,rp_per_km_ton:1550,revenue:3363314},
+  {no:74,month:"Mar",date:"2026-03-23",driver:"Awang",unit:"QBP 03",do_num:"843281",tonase:33.02,rp_per_km_ton:1550,revenue:3480308},
+  {no:75,month:"Mar",date:"2026-03-23",driver:"Darminto",unit:"QBP 05",do_num:"843461",tonase:32.30,rp_per_km_ton:1550,revenue:3404420},
+  {no:76,month:"Mar",date:"2026-03-23",driver:"Jhonson",unit:"QBP 01",do_num:"843086",tonase:30.17,rp_per_km_ton:1550,revenue:3179918},
+  {no:77,month:"Mar",date:"2026-03-23",driver:"Kasmadi",unit:"QBP 04",do_num:"843318",tonase:28.18,rp_per_km_ton:1550,revenue:2970172},
+  {no:78,month:"Mar",date:"2026-03-23",driver:"Julaikat",unit:"QBP 04",do_num:"843775",tonase:31.50,rp_per_km_ton:1550,revenue:3320100},
+  {no:79,month:"Mar",date:"2026-03-24",driver:"Julaikat",unit:"QBP 01",do_num:"843841",tonase:30.01,rp_per_km_ton:1550,revenue:3163054},
+  {no:80,month:"Mar",date:"2026-03-24",driver:"Kasmadi",unit:"QBP 02",do_num:"844095",tonase:28.48,rp_per_km_ton:1550,revenue:3001792},
+  {no:81,month:"Mar",date:"2026-03-24",driver:"Awang",unit:"QBP 03",do_num:"844132",tonase:29.37,rp_per_km_ton:1550,revenue:3095598},
+  {no:82,month:"Mar",date:"2026-03-24",driver:"Darminto",unit:"QBP 04",do_num:"844261",tonase:31.89,rp_per_km_ton:1550,revenue:3361206},
+  {no:83,month:"Mar",date:"2026-03-24",driver:"Julaikat",unit:"QBP 05",do_num:"844335",tonase:32.80,rp_per_km_ton:1550,revenue:3457120},
+  {no:84,month:"Mar",date:"2026-03-24",driver:"Jhonson",unit:"QBP 01",do_num:"844525",tonase:31.84,rp_per_km_ton:1550,revenue:3355936},
+  {no:85,month:"Mar",date:"2026-03-24",driver:"Kasmadi",unit:"QBP 02",do_num:"844877",tonase:32.72,rp_per_km_ton:1550,revenue:3448688},
+  {no:86,month:"Mar",date:"2026-03-24",driver:"Awang",unit:"QBP 03",do_num:"844848",tonase:33.06,rp_per_km_ton:1550,revenue:3484524},
+  {no:87,month:"Mar",date:"2026-03-24",driver:"Darminto",unit:"QBP 04",do_num:"845140",tonase:33.03,rp_per_km_ton:1550,revenue:3481362},
+  {no:88,month:"Mar",date:"2026-03-25",driver:"Julaikat",unit:"QBP 05",do_num:"845432",tonase:28.79,rp_per_km_ton:1550,revenue:3034466},
+  {no:89,month:"Mar",date:"2026-03-25",driver:"Jhonson",unit:"QBP 01",do_num:"845453",tonase:31.85,rp_per_km_ton:1550,revenue:3356990},
+  {no:90,month:"Mar",date:"2026-03-25",driver:"Kasmadi",unit:"QBP 02",do_num:"846215",tonase:30.67,rp_per_km_ton:1550,revenue:3232618},
+  {no:91,month:"Mar",date:"2026-03-26",driver:"Awang",unit:"QBP 03",do_num:"846300",tonase:30.99,rp_per_km_ton:1550,revenue:3266346},
+  {no:92,month:"Mar",date:"2026-03-26",driver:"Darminto",unit:"QBP 04",do_num:"845986",tonase:33.73,rp_per_km_ton:1550,revenue:3555142},
+  {no:93,month:"Mar",date:"2026-03-25",driver:"Julaikat",unit:"QBP 05",do_num:"846466",tonase:32.20,rp_per_km_ton:1550,revenue:3393880},
+  {no:94,month:"Mar",date:"2026-03-26",driver:"Jhonson",unit:"QBP 01",do_num:"846464",tonase:30.57,rp_per_km_ton:1550,revenue:3222078},
+  {no:95,month:"Mar",date:"2026-03-26",driver:"Kasmadi",unit:"QBP 04",do_num:"846495",tonase:30.38,rp_per_km_ton:1550,revenue:3202052},
+  {no:96,month:"Mar",date:"2026-03-26",driver:"Julaikat",unit:"QBP 05",do_num:"847097",tonase:31.76,rp_per_km_ton:1550,revenue:3347504},
+  {no:97,month:"Mar",date:"2026-03-26",driver:"Jhonson",unit:"QBP 02",do_num:"847399",tonase:31.28,rp_per_km_ton:1550,revenue:3296912},
+  {no:98,month:"Mar",date:"2026-03-26",driver:"Awang",unit:"QBP 01",do_num:"847580",tonase:33.44,rp_per_km_ton:1550,revenue:3524576},
+];
+const MAY=[
+  {no:1,month:"May",date:"2026-05-01",driver:"Jhonson",unit:"QBP 05",do_num:"893123",tonase:31.96,rp_per_km_ton:1550,revenue:3368584},
+  {no:2,month:"May",date:"2026-05-02",driver:"Kasmadi",unit:"QBP 01",do_num:"894142",tonase:30.25,rp_per_km_ton:1550,revenue:3188350},
+  {no:3,month:"May",date:"2026-05-02",driver:"Jhonson",unit:"QBP 05",do_num:"894203",tonase:32.14,rp_per_km_ton:1550,revenue:3387556},
+  {no:4,month:"May",date:"2026-05-02",driver:"Irfan",unit:"QBP 03",do_num:"894314",tonase:30.49,rp_per_km_ton:1550,revenue:3213646},
+  {no:5,month:"May",date:"2026-05-03",driver:"Kasmadi",unit:"QBP 01",do_num:"895513",tonase:30.74,rp_per_km_ton:1550,revenue:3239996},
+  {no:6,month:"May",date:"2026-05-04",driver:"Jhonson",unit:"QBP 05",do_num:"896247",tonase:31.66,rp_per_km_ton:1550,revenue:3336964},
+];
+const ALL_TRIPS=[...JAN,...FEB,...MAR,...APR,...MAY];
 
 // ══════════════════════════════════════════
 //  LIVE GOOGLE SHEETS AUTO-UPDATE
@@ -606,7 +716,9 @@ const GVIZ_BASE = 'https://docs.google.com/spreadsheets/d/1UCynS37vT7MrOPyJkpal8
 const LIVE_URLS = {
   jan: `${GVIZ_BASE}&gid=797450319`,
   feb: `${GVIZ_BASE}&gid=1176974908`,
+  mar: `${GVIZ_BASE}&gid=123512167`,
   apr: `${GVIZ_BASE}&gid=1022974330`,
+  may: `${GVIZ_BASE}&gid=333105232`,
 };
 
 function parseDDMMYY(s) {
@@ -687,8 +799,8 @@ async function fetchLiveData() {
   const statusEl = document.getElementById('liveStatus');
   if (statusEl) { statusEl.textContent = '⟳ Fetching live data...'; statusEl.style.color = 'var(--amber)'; }
   
-  const results = { jan: null, feb: null, apr: null };
-  const labels = { jan: 'Jan', feb: 'Feb', apr: 'Apr' };
+  const results = { jan: null, feb: null, mar: null, apr: null, may: null };
+  const labels = { jan: 'Jan', feb: 'Feb', mar: 'Mar', apr: 'Apr', may: 'May' };
   let loaded = 0, failed = 0;
 
   await Promise.allSettled(
@@ -708,7 +820,9 @@ async function fetchLiveData() {
     const combined = [
       ...(results.jan || JAN),
       ...(results.feb || FEB),
+      ...(results.mar || MAR),
       ...(results.apr || APR),
+      ...(results.may || MAY),
     ];
     // Replace ALL_TRIPS contents
     ALL_TRIPS.length = 0;
@@ -749,7 +863,7 @@ async function fetchAllWeather(){
   if(btn){btn.textContent='⟳ Fetching...';btn.disabled=true;}
   try{
     // Historical Jan-Feb 2026
-    const hRes=await fetch(`https://archive-api.open-meteo.com/v1/archive?latitude=${LAT}&longitude=${LON}&start_date=2026-01-01&end_date=2026-04-14&daily=precipitation_sum,temperature_2m_max,temperature_2m_min&timezone=Asia%2FJakarta`);
+    const hRes=await fetch(`https://archive-api.open-meteo.com/v1/archive?latitude=${LAT}&longitude=${LON}&start_date=2026-01-01&end_date=2026-04-25&daily=precipitation_sum,temperature_2m_max,temperature_2m_min&timezone=Asia%2FJakarta`);
     const hData=await hRes.json();
     if(hData.daily){
       hData.daily.time.forEach((d,i)=>{
@@ -879,7 +993,7 @@ function setSec(s){
 }
 function getFiltered(){
   return ALL_TRIPS.filter(t=>{
-    const mo=activeMo==='all'||(activeMo==='jan'&&t.month==='Jan')||(activeMo==='feb'&&t.month==='Feb')||(activeMo==='apr'&&t.month==='Apr');
+    const mo=activeMo==='all'||(activeMo==='jan'&&t.month==='Jan')||(activeMo==='feb'&&t.month==='Feb')||(activeMo==='mar'&&t.month==='Mar')||(activeMo==='apr'&&t.month==='Apr')||(activeMo==='may'&&t.month==='May');
     return mo&&(fD==='ALL'||t.driver===fD)&&(fU==='ALL'||t.unit===fU)&&(!srch_||t.driver.toLowerCase().includes(srch_)||t.unit.toLowerCase().includes(srch_)||t.do_num.includes(srch_));
   });
 }
@@ -901,7 +1015,9 @@ function buildKPIs(data){
   const fa=agg(FEB.filter(t=>(fD==='ALL'||t.driver===fD)&&(fU==='ALL'||t.unit===fU)));
   const aa=agg(APR.filter(t=>(fD==='ALL'||t.driver===fD)&&(fU==='ALL'||t.unit===fU)));
   const cur=agg(data);
-  const prevMap={jan:null,feb:ja,apr:fa};
+  const ma=agg(MAR.filter(t=>(fD==='ALL'||t.driver===fD)&&(fU==='ALL'||t.unit===fU)));
+  const mya=agg(MAY.filter(t=>(fD==='ALL'||t.driver===fD)&&(fU==='ALL'||t.unit===fU)));
+  const prevMap={jan:null,feb:ja,mar:fa,apr:ma,may:aa};
   const prevM=prevMap[activeMo]||null;
   const tr=(a,b,f)=>{if(!a||activeMo==='all'||!a[f]||!b[f])return'';const p=((b[f]-a[f])/a[f]*100);return`<div class="kpi-trend ${p>0?'up':'dn'}">${p>0?'↑':'↓'}${Math.abs(p).toFixed(1)}%</div>`;};
   const ks=[
@@ -946,7 +1062,7 @@ function buildDonut(data){
 
 function buildDriverBar(id,field,fmt){
   const dm={};
-  ALL_TRIPS.filter(t=>(activeMo==='all')||(activeMo==='jan'&&t.month==='Jan')||(activeMo==='feb'&&t.month==='Feb')||(activeMo==='apr'&&t.month==='Apr'))
+  ALL_TRIPS.filter(t=>(activeMo==='all')||(activeMo==='jan'&&t.month==='Jan')||(activeMo==='feb'&&t.month==='Feb')||(activeMo==='mar'&&t.month==='Mar')||(activeMo==='apr'&&t.month==='Apr')||(activeMo==='may'&&t.month==='May'))
     .filter(t=>fU==='ALL'||t.unit===fU)
     .forEach(t=>{if(!dm[t.driver])dm[t.driver]=0;dm[t.driver]+=t[field];});
   const sorted=Object.entries(dm).sort((a,b)=>b[1]-a[1]);
@@ -958,9 +1074,9 @@ function buildDriverCards(data){
   const dm={};data.forEach(t=>{if(!dm[t.driver])dm[t.driver]={n:0,ton:0,rev:0,units:new Set()};dm[t.driver].n++;dm[t.driver].ton+=t.tonase;dm[t.driver].rev+=t.revenue;dm[t.driver].units.add(t.unit);});
   const sorted=Object.entries(dm).sort((a,b)=>b[1].ton-a[1].ton);
   const maxT=Math.max(...sorted.map(d=>d[1].ton));
-  const inJ=new Set(JAN.map(t=>t.driver)),inF=new Set(FEB.map(t=>t.driver)),inA=new Set(APR.map(t=>t.driver));
+  const inJ=new Set(JAN.map(t=>t.driver)),inF=new Set(FEB.map(t=>t.driver)),inA=new Set(APR.map(t=>t.driver)),inM=new Set(MAR.map(t=>t.driver)),inMy=new Set(MAY.map(t=>t.driver));
   document.getElementById('dCards').innerHTML=sorted.map(([name,d])=>{
-    const isNew=(!inJ.has(name)&&inF.has(name))||(!inJ.has(name)&&!inF.has(name)&&inA.has(name));
+    const isNew=(!inJ.has(name))&&(inF.has(name)||inA.has(name)||inM.has(name)||inMy.has(name));
     return`<div class="dc" onclick="setChip('d','${name}')">
       <div style="display:flex;justify-content:space-between;align-items:flex-start">
         <div><div class="dn2" style="color:${DC[name]||'#fff'}">${name}</div><div class="du">${[...d.units].join(', ')}</div></div>
@@ -985,7 +1101,7 @@ function buildTable(data){
     const d=new Date(t.date),rain=WX.historical[t.date]?.rain||0,rainy=rain>=5;
     return`<tr class="${rainy?'rainy':''}">
       <td style="color:var(--t3)">${t.no}</td>
-      <td><span style="background:${t.month==='Jan'?'var(--amberd)':t.month==='Feb'?'var(--cyand)':'var(--purpled)'};color:${t.month==='Jan'?'var(--amber)':t.month==='Feb'?'var(--cyan)':'var(--purple)'};padding:1px 5px;border-radius:3px;font-size:8px">${t.month}</span></td>
+      <td><span style="background:${t.month==='Jan'?'var(--amberd)':t.month==='Feb'?'var(--cyand)':t.month==='Mar'?'var(--greend)':t.month==='May'?'rgba(244,63,94,.12)':'var(--purpled)'};color:${t.month==='Jan'?'var(--amber)':t.month==='Feb'?'var(--cyan)':t.month==='Mar'?'var(--green)':t.month==='May'?'#f43f5e':'var(--purple)'};padding:1px 5px;border-radius:3px;font-size:8px">${t.month}</span></td>
       <td>${d.getDate()}/${d.getMonth()+1}/26</td>
       <td style="color:${DC[t.driver]||'#fff'};font-weight:500">${t.driver}</td>
       <td><span class="tdu">${t.unit}</span></td>
@@ -1002,7 +1118,7 @@ window.srt=col=>{if(srt_===col)srtD*=-1;else{srt_=col;srtD=1;}buildTable(getFilt
 window.onSrch=()=>{srch_=document.getElementById('tblSrch').value.toLowerCase();pg_=1;buildTable(getFiltered());};
 
 function buildCompare(){
-  const ja=agg(JAN),fa=agg(FEB),aa=agg(APR);
+  const ja=agg(JAN),fa=agg(FEB),ma=agg(MAR),aa=agg(APR),mya=agg(MAY);
   const pct=(a,b)=>a?((b-a)/a*100).toFixed(1):'—';
   const items=[
     {lb:'Ritase',jv:ja.n,fv:fa.n,av:aa.n,fmt:v=>fN(v)+' trips'},
