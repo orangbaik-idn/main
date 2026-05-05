@@ -66,7 +66,7 @@ body{background:var(--bg);color:var(--t1);font-family:'DM Sans',sans-serif;min-h
 .view.active{display:flex;}
 
 /* KPI */
-.kpi-row{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;}
+.kpi-row{display:grid;grid-template-columns:repeat(8,1fr);gap:8px;}
 .kpi{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;position:relative;overflow:hidden;transition:.2s;}
 .kpi:hover{border-color:var(--amber);}
 .kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
@@ -184,7 +184,7 @@ tbody td{padding:7px 12px;font-size:10px;font-family:'Fira Code',monospace;color
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
 ::-webkit-scrollbar-thumb:hover{background:var(--amber);}
 
-@media(max-width:1300px){.kpi-row{grid-template-columns:repeat(4,1fr);}.dgrid{grid-template-columns:repeat(4,1fr);}}
+@media(max-width:1300px){.kpi-row{grid-template-columns:repeat(4,1fr)};.dgrid{grid-template-columns:repeat(4,1fr);}}
 @media(max-width:900px){.main{padding:12px;}.kpi-row{grid-template-columns:repeat(2,1fr);}.g2-main,.g2-half,.g3,.g4{grid-template-columns:1fr;}.dgrid{grid-template-columns:repeat(2,1fr);}.gh-grid{grid-template-columns:1fr;}.wx-forecast{grid-template-columns:repeat(3,1fr);}.wx-stat-grid{grid-template-columns:repeat(2,1fr);}}
 </style>
 </head>
@@ -210,13 +210,13 @@ tbody td{padding:7px 12px;font-size:10px;font-family:'Fira Code',monospace;color
 </div>
 
 <div class="month-nav">
-  <div class="m-tab active" data-m="all" onclick="setMonth('all')">All <span class="mb" id="mb-all">303+</span></div>
-  <div class="m-tab" data-m="jan" onclick="setMonth('jan')">Jan 2026 <span class="mb">57</span></div>
-  <div class="m-tab" data-m="feb" onclick="setMonth('feb')">Feb 2026 <span class="mb">82</span></div>
+  <div class="m-tab active" data-m="all" onclick="setMonth('all')">All <span class="mb" id="mb-all">—</span></div>
+  <div class="m-tab" data-m="jan" onclick="setMonth('jan')">Jan 2026 <span class="mb" id="mb-jan">—</span></div>
+  <div class="m-tab" data-m="feb" onclick="setMonth('feb')">Feb 2026 <span class="mb" id="mb-feb">—</span></div>
 
-  <div class="m-tab" data-m="mar" onclick="setMonth('mar')">Mar 2026 <span class="mb">98</span></div>
-  <div class="m-tab" data-m="apr" onclick="setMonth('apr')">Apr 2026 <span class="mb">60</span></div>
-  <div class="m-tab" data-m="may" onclick="setMonth('may')">May 2026 <span class="mb" id="mb-may">6+</span></div>
+  <div class="m-tab" data-m="mar" onclick="setMonth('mar')">Mar 2026 <span class="mb" id="mb-mar">—</span></div>
+  <div class="m-tab" data-m="apr" onclick="setMonth('apr')">Apr 2026 <span class="mb" id="mb-apr">—</span></div>
+  <div class="m-tab" data-m="may" onclick="setMonth('may')">May 2026 <span class="mb" id="mb-may">—</span></div>
 </div>
 
 <div class="sec-nav">
@@ -273,7 +273,7 @@ tbody td{padding:7px 12px;font-size:10px;font-family:'Fira Code',monospace;color
   </div>
   <div class="tw">
     <div class="th">
-      <div><div class="ct">Trip Log</div><div class="cs"><span id="rowCount">139</span> records · 💧 = rainy day (≥5mm)</div></div>
+      <div><div class="ct">Trip Log</div><div class="cs"><span id="rowCount">—</span> records · 💧 = rainy day (≥5mm)</div></div>
       <input class="tsrch" id="tblSrch" placeholder="Cari driver / unit / DO..." oninput="onSrch()">
     </div>
     <div style="overflow-x:auto">
@@ -348,13 +348,21 @@ tbody td{padding:7px 12px;font-size:10px;font-family:'Fira Code',monospace;color
 <!-- ══ FUEL ══ -->
 <div class="view" id="view-fuel">
   <div class="note-bar">⛽ Fuel (Solar) data from refueling logs. Figures confirmed from sheet totals.</div>
-  <div class="g4">
-    <div class="card"><div class="sec-h" style="color:var(--t3)">January 2026</div><div style="color:var(--t3);font-family:'Fira Code',monospace;font-size:11px;margin-top:10px">Fuel log not in shared sheets</div></div>
+  <div class="g4" style="grid-template-columns:repeat(5,1fr)">
+    <div class="card"><div class="sec-h" style="color:var(--t3)">January 2026</div><div style="color:var(--t3);font-family:'Fira Code',monospace;font-size:11px;margin-top:10px">Fuel log not shared</div></div>
     <div class="card"><div class="sec-h" style="border-color:var(--cyan)">February 2026</div>
       <div style="font-family:'Fira Code',monospace;font-size:10px;line-height:2;margin-top:8px">
         <div>Refuels: <span style="color:#fff">81</span></div>
         <div>Volume: <span style="color:var(--cyan)">9,720 L</span></div>
         <div>Biaya: <span style="color:var(--amber)">Rp 106,920,000</span></div>
+        <div>Rate/L: <span style="color:#fff">Rp 11,000</span></div>
+      </div>
+    </div>
+    <div class="card"><div class="sec-h" style="border-color:var(--green)">March 2026</div>
+      <div style="font-family:'Fira Code',monospace;font-size:10px;line-height:2;margin-top:8px">
+        <div>Refuels: <span style="color:#fff">124</span></div>
+        <div>Volume: <span style="color:var(--cyan)">14,880 L</span></div>
+        <div>Biaya: <span style="color:var(--amber)">Rp 163,680,000</span></div>
         <div>Rate/L: <span style="color:#fff">Rp 11,000</span></div>
       </div>
     </div>
@@ -367,13 +375,23 @@ tbody td{padding:7px 12px;font-size:10px;font-family:'Fira Code',monospace;color
         <div>Rate/L: <span style="color:#fff">Rp 11,000</span></div>
       </div>
     </div>
+    <div class="card"><div class="sec-h" style="border-color:var(--red)">May 2026 <small style="font-size:8px;color:var(--t3)">(live)</small></div>
+      <div style="font-family:'Fira Code',monospace;font-size:10px;line-height:2;margin-top:8px">
+        <div id="may-refuels">Refuels: <span style="color:var(--t3)">filling...</span></div>
+        <div id="may-vol">Volume: <span style="color:var(--t3)">filling...</span></div>
+        <div id="may-biaya">Biaya: <span style="color:var(--t3)">updating live</span></div>
+        <div>Rate/L: <span style="color:#fff">Rp 11,000</span></div>
+      </div>
+    </div>
   </div>
   <div class="card"><div class="ch"><div><div class="ct">Fuel Cost by Month</div><div class="cs">Volume & biaya solar per bulan</div></div></div><div class="cw" style="height:200px"><canvas id="fuelChart"></canvas></div></div>
   <div class="card">
     <div class="sec-h">Driver Roster Changes (from Fuel Logs)</div>
     <div style="font-family:'Fira Code',monospace;font-size:10px;color:var(--t2);line-height:2.2">
       <div><span style="color:var(--amber)">Feb 2026:</span> Awang, Darminto, Riko, Anggi (LV01), Julaikat, Rahmat, Jhonson, Gom Gom (LV)</div>
-      <div><span style="color:var(--amber)">Apr 2026:</span> Jhonson, Julaikat, Kasmadi, Darminto → <span style="color:var(--cyan)">Deddy</span> replaces Awang mid-Apr · <span style="color:var(--cyan)">Wayan</span> appears late Apr</div>
+      <div><span style="color:var(--amber)">Mar 2026:</span> Same roster as Feb + <span style="color:var(--cyan)">Kasmadi</span> joins, <span style="color:var(--cyan)">Julaikat</span> returns, Rahmat continues on QBP 01</div>
+      <div><span style="color:var(--amber)">Apr 2026:</span> Jhonson, Julaikat, Kasmadi, Darminto → <span style="color:var(--cyan)">Deddy</span> replaces Awang · <span style="color:var(--cyan)">Wayan</span> joins late Apr</div>
+      <div><span style="color:var(--amber)">May 2026:</span> <span style="color:var(--green)">Live data</span> — Jhonson, Kasmadi, Irfan confirmed so far</div>
     </div>
   </div>
 </div>
@@ -1027,6 +1045,7 @@ function buildKPIs(data){
     {cl:'g',lb:'Avg Ton/Trip',val:cur.avg.toFixed(2),sub:'tons per ritase',tr:tr(prevM,cur,'avg')},
     {cl:'p',lb:'Active Drivers',val:cur.drivers,sub:'operators',tr:''},
     {cl:'c',lb:'Rate Rp/Km/Ton',val:activeMo==='jan'?'1,400':activeMo==='feb'?'1,550':activeMo==='apr'?'1,550':'1,400–1,550',sub:activeMo==='feb'||activeMo==='apr'?'Rate stabil Feb–Apr':'H2 route · 68 km',tr:''},
+    {cl:'o',lb:'Est. Fuel Cost',val:activeMo==='jan'?'—':activeMo==='feb'?'Rp 107Jt':activeMo==='mar'?'Rp 164Jt':activeMo==='apr'?'Rp 61Jt':activeMo==='may'?'Live':activeMo==='all'?'Rp 332Jt+':'—',sub:activeMo==='all'?'Feb+Mar+Apr total':activeMo==='may'?'Secretary filling':'Solar per bulan',tr:''},
     {cl:'b',lb:'Wx Today',val:(WX.current?WX.current.temp+'°C':'—°C'),sub:(WX.current?wxIcon(WX.current.code)+' '+wxTxt(WX.current.code):'Click ⟳ Weather'),tr:''},
   ];
   document.getElementById('kpiRow').innerHTML=ks.map(k=>`<div class="kpi ${k.cl}">${k.tr}<div class="kpi-lbl">${k.lb}</div><div class="kpi-val">${k.val}</div><div class="kpi-sub">${k.sub}</div></div>`).join('');
@@ -1154,10 +1173,37 @@ function buildCompare(){
 
 function buildFuel(){
   if(charts.fuelChart)charts.fuelChart.destroy();
-  charts.fuelChart=new Chart(document.getElementById('fuelChart').getContext('2d'),{type:'bar',data:{labels:['Feb 2026','Apr 2026'],datasets:[{label:'Volume (L)',data:[9720,5520],backgroundColor:'rgba(34,211,238,.4)',borderColor:'#22d3ee',borderWidth:1,borderRadius:3,yAxisID:'y'},{label:'Biaya (Rp)',data:[106920000,60720000],backgroundColor:'rgba(251,146,60,.3)',borderColor:'#fb923c',borderWidth:1,borderRadius:3,yAxisID:'y2'}]},options:{...BASE,plugins:{...BASE.plugins,legend:{display:true,labels:{color:'#64748b',font:{family:'Fira Code',size:9},boxWidth:8}}},scales:{x:BASE.scales.x,y:{...BASE.scales.y,position:'left',ticks:{...BASE.scales.y.ticks,callback:v=>fN(v)+'L'}},y2:{position:'right',grid:{display:false},ticks:{color:'#64748b',font:{family:'Fira Code',size:9},callback:v=>'Rp'+(v/1e6).toFixed(0)+'Jt'}}}}});
+  charts.fuelChart=new Chart(document.getElementById('fuelChart').getContext('2d'),{type:'bar',data:{labels:['Feb','Mar','Apr','May*'],datasets:[{label:'Volume (L)',data:[9720,14880,5520,0],backgroundColor:'rgba(34,211,238,.4)',borderColor:'#22d3ee',borderWidth:1,borderRadius:3,yAxisID:'y'},{label:'Biaya (Rp)',data:[106920000,163680000,60720000,0],backgroundColor:'rgba(251,146,60,.3)',borderColor:'#fb923c',borderWidth:1,borderRadius:3,yAxisID:'y2'}]},options:{...BASE,plugins:{...BASE.plugins,legend:{display:true,labels:{color:'#64748b',font:{family:'Fira Code',size:9},boxWidth:8}}},scales:{x:BASE.scales.x,y:{...BASE.scales.y,position:'left',ticks:{...BASE.scales.y.ticks,callback:v=>fN(v)+'L'}},y2:{position:'right',grid:{display:false},ticks:{color:'#64748b',font:{family:'Fira Code',size:9},callback:v=>'Rp'+(v/1e6).toFixed(0)+'Jt'}}}}});
 }
 
-function renderAll(){const data=getFiltered();buildKPIs(data);buildDaily(data);buildDonut(data);buildDriverBar('dTripChart','no',false);buildDriverBar('dTonChart','tonase',false);buildDriverBar('dRevChart','revenue',true);buildDriverCards(data);buildTable(data);}
+
+function updateTabBadges(){
+  const counts = {
+    all: ALL_TRIPS.length,
+    jan: ALL_TRIPS.filter(t=>t.month==='Jan').length,
+    feb: ALL_TRIPS.filter(t=>t.month==='Feb').length,
+    mar: ALL_TRIPS.filter(t=>t.month==='Mar').length,
+    apr: ALL_TRIPS.filter(t=>t.month==='Apr').length,
+    may: ALL_TRIPS.filter(t=>t.month==='May').length,
+  };
+  Object.entries(counts).forEach(([k,v])=>{
+    const el=document.getElementById('mb-'+k);
+    if(el) el.textContent=v;
+  });
+}
+
+function renderAll(){
+  updateTabBadges();
+  const data=getFiltered();
+  try{buildKPIs(data);}catch(e){console.error('KPI error:',e);}
+  try{buildDaily(data);}catch(e){console.error('Daily chart error:',e);}
+  try{buildDonut(data);}catch(e){console.error('Donut error:',e);}
+  try{buildDriverBar('dTripChart','no',false);}catch(e){}
+  try{buildDriverBar('dTonChart','tonase',false);}catch(e){}
+  try{buildDriverBar('dRevChart','revenue',true);}catch(e){}
+  try{buildDriverCards(data);}catch(e){console.error('Driver cards error:',e);}
+  buildTable(data);
+}
 
 Chart.defaults.font.family='Fira Code';
 buildChips();
